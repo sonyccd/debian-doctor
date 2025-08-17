@@ -15,13 +15,24 @@ NC='\033[0m' # No Color
 BOLD='\033[1m'
 
 # Global variables
-LOG_FILE="/tmp/debian_doctor.log"
+# Create user-specific log file to avoid permission conflicts
+if [[ $EUID -eq 0 ]]; then
+    LOG_FILE="/tmp/debian_doctor_root.log"
+else
+    LOG_FILE="/tmp/debian_doctor_$(id -u).log"
+fi
 ISSUES_FOUND=()
 WARNINGS_FOUND=()
 
-# Logging function
+# Logging function with error handling
 log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE" 2>/dev/null || {
+        # If logging fails, try to create a new log file
+        local new_log="/tmp/debian_doctor_backup_$(date +%s).log"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] Log permission error, switching to: $new_log" > "$new_log"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$new_log"
+        LOG_FILE="$new_log"
+    }
 }
 
 # Print functions
@@ -699,8 +710,21 @@ generate_summary() {
 
 # Main function
 main() {
-    # Initialize log
-    echo "Debian Doctor started at $(date)" > "$LOG_FILE"
+    # Initialize log with proper permissions handling
+    # Remove existing log if we can write to it, or create new one
+    if [[ -w "$LOG_FILE" ]] || [[ ! -f "$LOG_FILE" ]]; then
+        echo "Debian Doctor started at $(date)" > "$LOG_FILE" 2>/dev/null || {
+            # If we can't write to the intended log file, use a backup location
+            LOG_FILE="/tmp/debian_doctor_$(date +%s)_$.log"
+            echo "Debian Doctor started at $(date)" > "$LOG_FILE"
+            print_warning "Using alternate log file due to permissions: $LOG_FILE"
+        }
+    else
+        # Log file exists but not writable, create new one with timestamp
+        LOG_FILE="/tmp/debian_doctor_$(date +%s)_$.log"
+        echo "Debian Doctor started at $(date)" > "$LOG_FILE"
+        print_warning "Created new log file due to permission conflict: $LOG_FILE"
+    fi
     
     print_header
     
