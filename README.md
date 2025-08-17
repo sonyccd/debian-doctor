@@ -1,5 +1,6 @@
 # Debian Doctor 🩺
 
+[![CI Status](https://github.com/sonyccd/debian-doctor/workflows/test/badge.svg)](https://github.com/sonyccd/debian-doctor/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Shell](https://img.shields.io/badge/Shell-Bash-blue.svg)](https://www.gnu.org/software/bash/)
 [![Platform](https://img.shields.io/badge/Platform-Debian%20%7C%20Ubuntu-orange.svg)](https://www.debian.org/)
