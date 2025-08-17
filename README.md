@@ -1,6 +1,5 @@
 # Debian Doctor 🩺
 
-[![CI Status](https://github.com/sonyccd/debian-doctor/workflows/Debian%20Doctor%20CI/badge.svg)](https://github.com/sonyccd/debian-doctor/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Shell](https://img.shields.io/badge/Shell-Bash-blue.svg)](https://www.gnu.org/software/bash/)
 [![Platform](https://img.shields.io/badge/Platform-Debian%20%7C%20Ubuntu-orange.svg)](https://www.debian.org/)
@@ -318,12 +317,6 @@ We're always looking to improve! Current roadmap includes:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
-
-- Inspired by similar diagnostic tools in other distributions
-- Built with standard POSIX utilities for maximum compatibility
-- Community feedback and contributions
-- Debian and Ubuntu communities for excellent documentation
 
 ## 📚 Additional Resources
 
@@ -341,12 +334,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Support
 - [GitHub Issues](https://github.com/sonyccd/debian-doctor/issues)
-- [Discussions](https://github.com/sonyccd/debian-doctor/discussions)
-- [Debian Forums](https://forums.debian.net/)
-- [Ubuntu Forums](https://ubuntuforums.org/)
 
 ---
-
-**Debian Doctor** - Because every system needs a checkup! 🩺
-
-Made with ❤️ for the Debian community
