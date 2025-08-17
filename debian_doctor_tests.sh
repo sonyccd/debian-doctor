@@ -5,7 +5,8 @@
 
 # Test configuration
 TEST_DIR="/tmp/debian_doctor_test"
-ORIGINAL_SCRIPT="./debian_doctor.sh"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ORIGINAL_SCRIPT="$SCRIPT_DIR/debian_doctor.sh"
 TEST_LOG="/tmp/test_debian_doctor.log"
 PASSED=0
 FAILED=0
@@ -28,8 +29,14 @@ setup_test_env() {
     if [[ -f "$ORIGINAL_SCRIPT" ]]; then
         cp "$ORIGINAL_SCRIPT" "./debian_doctor.sh"
         chmod +x "./debian_doctor.sh"
+        echo "✓ Copied debian_doctor.sh from $ORIGINAL_SCRIPT"
     else
-        echo "Error: Original script not found at $ORIGINAL_SCRIPT"
+        echo "❌ Error: Original script not found at $ORIGINAL_SCRIPT"
+        echo "Current working directory: $(pwd)"
+        echo "Script directory: $SCRIPT_DIR"
+        echo "Looking for script at: $ORIGINAL_SCRIPT"
+        echo ""
+        echo "Please ensure debian_doctor.sh is in the same directory as this test script."
         exit 1
     fi
     
@@ -522,6 +529,32 @@ run_all_tests() {
     echo -e "${BOLD}${BLUE}Debian Doctor Unit Test Suite${NC}"
     echo -e "${BLUE}================================${NC}\n"
     
+    # Pre-flight checks
+    echo -e "${BLUE}Pre-flight checks:${NC}"
+    echo "- Test script location: ${BASH_SOURCE[0]}"
+    echo "- Script directory: $SCRIPT_DIR"
+    echo "- Looking for main script at: $ORIGINAL_SCRIPT"
+    echo "- Test directory will be: $TEST_DIR"
+    echo ""
+    
+    # Verify script exists before proceeding
+    if [[ ! -f "$ORIGINAL_SCRIPT" ]]; then
+        echo -e "${RED}❌ FATAL: debian_doctor.sh not found!${NC}"
+        echo ""
+        echo "Expected location: $ORIGINAL_SCRIPT"
+        echo "Current directory: $(pwd)"
+        echo ""
+        echo "Solutions:"
+        echo "1. Run this test from the same directory as debian_doctor.sh"
+        echo "2. Ensure both scripts are in the same directory"
+        echo "3. Check if the file exists: ls -la debian_doctor.sh"
+        echo ""
+        exit 1
+    fi
+    
+    echo -e "${GREEN}✓ Found debian_doctor.sh${NC}"
+    echo ""
+    
     setup_test_env
     
     test_script_executable
@@ -602,8 +635,14 @@ trap cleanup_test_env EXIT
 # Add integration and performance tests to main runner
 main_test_suite() {
     run_all_tests
-    test_integration
-    test_performance
+    
+    # Only run integration tests if we successfully set up
+    if [[ -f "./debian_doctor.sh" ]]; then
+        test_integration
+        test_performance
+    else
+        echo -e "${YELLOW}⚠️ Skipping integration and performance tests - setup failed${NC}"
+    fi
 }
 
 # Run tests if script is executed directly
