@@ -110,12 +110,15 @@ check_disk_space() {
         usage=$(echo "$line" | awk '{print $5}' | sed 's/%//')
         mount=$(echo "$line" | awk '{print $6}')
         
-        if [[ $usage -gt 95 ]]; then
-            print_error "Disk usage critical on $mount: ${usage}%"
-        elif [[ $usage -gt 85 ]]; then
-            print_warning "Disk usage high on $mount: ${usage}%"
-        else
-            print_ok "Disk usage OK on $mount: ${usage}%"
+        # Skip if usage is empty or not a number
+        if [[ -n "$usage" && "$usage" =~ ^[0-9]+$ ]]; then
+            if [[ $usage -gt 95 ]]; then
+                print_error "Disk usage critical on $mount: ${usage}%"
+            elif [[ $usage -gt 85 ]]; then
+                print_warning "Disk usage high on $mount: ${usage}%"
+            else
+                print_ok "Disk usage OK on $mount: ${usage}%"
+            fi
         fi
     done < <(df -h | grep -E '^/dev/')
     
@@ -125,10 +128,13 @@ check_disk_space() {
         usage=$(echo "$line" | awk '{print $5}' | sed 's/%//')
         mount=$(echo "$line" | awk '{print $6}')
         
-        if [[ $usage -gt 90 ]]; then
-            print_error "Inode usage critical on $mount: ${usage}%"
-        elif [[ $usage -gt 80 ]]; then
-            print_warning "Inode usage high on $mount: ${usage}%"
+        # Skip if usage is empty or not a number
+        if [[ -n "$usage" && "$usage" =~ ^[0-9]+$ ]]; then
+            if [[ $usage -gt 90 ]]; then
+                print_error "Inode usage critical on $mount: ${usage}%"
+            elif [[ $usage -gt 80 ]]; then
+                print_warning "Inode usage high on $mount: ${usage}%"
+            fi
         fi
     done < <(df -i | grep -E '^/dev/')
     
@@ -189,16 +195,31 @@ check_services() {
         fi
     done
     
-    # Check for failed services
-    failed_services=$(systemctl --failed --no-legend --no-pager 2>/dev/null | awk '{print $1}' | grep -v '^$')
-    if [[ -n "$failed_services" ]]; then
+    # Check for failed services with better parsing
+    print_info "Checking for failed services..."
+    failed_output=$(systemctl --failed --no-legend --no-pager 2>/dev/null)
+    
+    if [[ -n "$failed_output" ]]; then
         print_error "Failed services detected:"
-        echo "$failed_services" | while read -r service; do
-            if [[ -n "$service" && "$service" != "●" ]]; then
-                echo "  - $service"
-                # Get additional info about the failed service
-                status=$(systemctl is-active "$service" 2>/dev/null || echo "unknown")
-                echo "    Status: $status"
+        
+        # Parse each line of failed services output
+        echo "$failed_output" | while IFS= read -r line; do
+            if [[ -n "$line" ]]; then
+                # Extract service name - it's the first field before any spaces
+                service_name=$(echo "$line" | awk '{print $1}' | sed 's/^●\s*//' | sed 's/^\*\s*//')
+                
+                # Only show if we have a valid service name
+                if [[ -n "$service_name" && "$service_name" != "●" && "$service_name" != "*" ]]; then
+                    echo "  - $service_name"
+                    
+                    # Try to get failure reason
+                    if systemctl status "$service_name" --no-pager -l 2>/dev/null | grep -q "failed"; then
+                        failure_info=$(systemctl status "$service_name" --no-pager -l 2>/dev/null | grep -E "failed|error|exit" | head -1 | sed 's/^[[:space:]]*//')
+                        if [[ -n "$failure_info" ]]; then
+                            echo "    Reason: $failure_info"
+                        fi
+                    fi
+                fi
             fi
         done
     else
