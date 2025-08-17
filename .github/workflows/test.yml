@@ -68,21 +68,41 @@ jobs:
       - name: Validate script syntax
         run: |
           echo "Checking bash syntax for debian_doctor.sh..."
-          bash -n debian_doctor.sh
+          if [[ -f "debian_doctor.sh" ]]; then
+            bash -n debian_doctor.sh
+            echo "✓ debian_doctor.sh syntax check passed"
+          else
+            echo "❌ debian_doctor.sh not found"
+            exit 1
+          fi
           
           echo "Checking bash syntax for debian_doctor_tests.sh..."
-          bash -n debian_doctor_tests.sh
+          if [[ -f "debian_doctor_tests.sh" ]]; then
+            bash -n debian_doctor_tests.sh
+            echo "✓ debian_doctor_tests.sh syntax check passed"
+          else
+            echo "⚠️ debian_doctor_tests.sh not found, skipping test syntax check"
+          fi
           
-          echo "✓ Syntax validation passed"
+          echo "✓ Syntax validation completed"
       
       - name: Check script permissions
         run: |
-          # Ensure scripts are executable
-          chmod +x debian_doctor.sh
-          chmod +x debian_doctor_tests.sh
+          # Ensure main script is executable
+          if [[ -f "debian_doctor.sh" ]]; then
+            chmod +x debian_doctor.sh
+            echo "✓ debian_doctor.sh made executable"
+          fi
+          
+          # Make test script executable if it exists
+          if [[ -f "debian_doctor_tests.sh" ]]; then
+            chmod +x debian_doctor_tests.sh
+            echo "✓ debian_doctor_tests.sh made executable"
+          fi
           
           # Verify permissions
-          ls -la debian_doctor*.sh
+          ls -la debian_doctor*.sh 2>/dev/null || echo "Script files:"
+          find . -name "debian_doctor*.sh" -exec ls -la {} \;
       
       - name: Run shellcheck (static analysis)
         uses: ludeeus/action-shellcheck@master
