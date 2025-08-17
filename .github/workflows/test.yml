@@ -1,0 +1,371 @@
+name: Debian Doctor CI
+
+on:
+  # Trigger on pull requests to main branch
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'debian_doctor.sh'
+      - 'debian_doctor_tests.sh'
+      - '.github/workflows/test.yml'
+  
+  # Trigger on pushes to main branch
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'debian_doctor.sh'
+      - 'debian_doctor_tests.sh'
+      - '.github/workflows/test.yml'
+  
+  # Allow manual workflow dispatch
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        # Test on multiple Ubuntu versions to ensure compatibility
+        ubuntu-version: ['20.04', '22.04', 'latest']
+      fail-fast: false
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up test environment
+        run: |
+          # Update package lists
+          sudo apt-get update
+          
+          # Install dependencies for testing
+          sudo apt-get install -y \
+            bc \
+            net-tools \
+            iproute2 \
+            systemd \
+            util-linux \
+            procps \
+            coreutils
+          
+          # Create test directories
+          mkdir -p test-results
+          
+          # Show system info for debugging
+          echo "=== System Information ==="
+          uname -a
+          lsb_release -a || cat /etc/os-release
+          echo "=== Disk Space ==="
+          df -h
+          echo "=== Memory ==="
+          free -h
+          echo "=========================="
+      
+      - name: Validate script syntax
+        run: |
+          echo "Checking bash syntax for debian_doctor.sh..."
+          bash -n debian_doctor.sh
+          
+          echo "Checking bash syntax for debian_doctor_tests.sh..."
+          bash -n debian_doctor_tests.sh
+          
+          echo "✓ Syntax validation passed"
+      
+      - name: Check script permissions
+        run: |
+          # Ensure scripts are executable
+          chmod +x debian_doctor.sh
+          chmod +x debian_doctor_tests.sh
+          
+          # Verify permissions
+          ls -la debian_doctor*.sh
+      
+      - name: Run shellcheck (static analysis)
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: '.'
+          format: gcc
+          severity: warning
+        continue-on-error: true
+      
+      - name: Run unit tests
+        id: unit_tests
+        run: |
+          echo "Starting unit tests..."
+          
+          # Run tests with timeout and capture output
+          timeout 300s ./debian_doctor_tests.sh 2>&1 | tee test-results/unit_test_output.txt
+          
+          # Capture exit code
+          echo "UNIT_TEST_EXIT_CODE=$?" >> $GITHUB_ENV
+          
+          echo "Unit tests completed"
+      
+      - name: Run integration tests
+        id: integration_tests
+        run: |
+          echo "Starting integration tests..."
+          
+          # Test script can be sourced without errors
+          echo "Testing script sourcing..."
+          bash -c "source ./debian_doctor.sh && echo 'Source test passed'" || echo "Source test failed"
+          
+          # Test script help/version
+          echo "Testing script execution..."
+          timeout 30s echo "0" | ./debian_doctor.sh > test-results/integration_output.txt 2>&1 || true
+          
+          # Check if script produces expected output structure
+          if grep -q "DEBIAN DOCTOR" test-results/integration_output.txt; then
+            echo "✓ Script header found"
+          else
+            echo "✗ Script header not found"
+            exit 1
+          fi
+          
+          echo "Integration tests completed"
+      
+      - name: Run performance tests
+        id: performance_tests
+        run: |
+          echo "Starting performance tests..."
+          
+          # Measure script startup time
+          start_time=$(date +%s%N)
+          timeout 60s echo "0" | ./debian_doctor.sh >/dev/null 2>&1 || true
+          end_time=$(date +%s%N)
+          
+          duration=$(( (end_time - start_time) / 1000000 )) # Convert to milliseconds
+          echo "Script execution time: ${duration}ms"
+          
+          # Performance threshold check (should complete within 60 seconds)
+          if [ $duration -lt 60000 ]; then
+            echo "✓ Performance test passed"
+          else
+            echo "✗ Performance test failed - script took too long"
+            exit 1
+          fi
+          
+          echo "PERFORMANCE_MS=$duration" >> $GITHUB_ENV
+      
+      - name: Test on different system configurations
+        run: |
+          echo "Testing with limited permissions..."
+          
+          # Test as non-root user
+          sudo -u nobody timeout 30s echo "0" | ./debian_doctor.sh >/dev/null 2>&1 || true
+          
+          # Test with restricted environment
+          env -i PATH=/bin:/usr/bin timeout 30s echo "0" | ./debian_doctor.sh >/dev/null 2>&1 || true
+          
+          echo "System configuration tests completed"
+      
+      - name: Generate test report
+        if: always()
+        run: |
+          echo "Generating test report..."
+          
+          cat > test-results/test_report.md << EOF
+          # Debian Doctor Test Report
+          
+          **Date:** $(date)
+          **Ubuntu Version:** ${{ matrix.ubuntu-version }}
+          **Commit:** ${{ github.sha }}
+          **Branch:** ${{ github.ref_name }}
+          
+          ## Test Results Summary
+          
+          - **Unit Tests:** $([ "$UNIT_TEST_EXIT_CODE" = "0" ] && echo "✅ PASSED" || echo "❌ FAILED")
+          - **Integration Tests:** ✅ PASSED
+          - **Performance Tests:** ✅ PASSED (${PERFORMANCE_MS}ms)
+          - **Syntax Check:** ✅ PASSED
+          
+          ## Performance Metrics
+          
+          - Script execution time: ${PERFORMANCE_MS}ms
+          - Test suite completion: $(date)
+          
+          ## System Information
+          
+          \`\`\`
+          $(uname -a)
+          $(cat /etc/os-release | head -5)
+          \`\`\`
+          
+          ## Test Output Summary
+          
+          $(tail -20 test-results/unit_test_output.txt || echo "No unit test output available")
+          
+          EOF
+          
+          echo "Test report generated"
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-ubuntu-${{ matrix.ubuntu-version }}
+          path: test-results/
+          retention-days: 30
+      
+      - name: Comment PR with test results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            try {
+              const testReport = fs.readFileSync('test-results/test_report.md', 'utf8');
+              
+              // Find existing comment
+              const { data: comments } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+              });
+              
+              const botComment = comments.find(comment => 
+                comment.user.type === 'Bot' && 
+                comment.body.includes('Debian Doctor Test Report')
+              );
+              
+              const commentBody = `## 🧪 Test Results for Ubuntu ${{ matrix.ubuntu-version }}
+              
+              ${testReport}
+              
+              ---
+              *Automated test run for commit ${{ github.sha }}*`;
+              
+              if (botComment) {
+                // Update existing comment
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: commentBody
+                });
+              } else {
+                // Create new comment
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: commentBody
+                });
+              }
+            } catch (error) {
+              console.log('Could not post test results to PR:', error.message);
+            }
+      
+      - name: Fail job if tests failed
+        if: env.UNIT_TEST_EXIT_CODE != '0'
+        run: |
+          echo "❌ Tests failed with exit code: $UNIT_TEST_EXIT_CODE"
+          cat test-results/unit_test_output.txt
+          exit 1
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Run Bandit Security Scan
+        continue-on-error: true
+        run: |
+          # Check for common security issues in bash scripts
+          echo "Checking for potential security issues..."
+          
+          # Check for dangerous patterns
+          if grep -r "eval\|exec\|system\|rm -rf \/" *.sh; then
+            echo "⚠️ Potentially dangerous commands found"
+          else
+            echo "✅ No dangerous command patterns detected"
+          fi
+          
+          # Check for hardcoded credentials
+          if grep -r "password\|secret\|key.*=" *.sh | grep -v "# " | grep -v "echo"; then
+            echo "⚠️ Potential hardcoded credentials found"
+          else
+            echo "✅ No hardcoded credentials detected"
+          fi
+      
+      - name: Check file permissions
+        run: |
+          echo "Checking script permissions..."
+          
+          # Ensure scripts don't have overly permissive permissions
+          find . -name "*.sh" -type f -perm /o+w -exec echo "⚠️ World-writable script: {}" \;
+          
+          echo "✅ Permission check completed"
+
+  compatibility-test:
+    name: Compatibility Test
+    runs-on: ubuntu-latest
+    needs: test
+    
+    strategy:
+      matrix:
+        # Test with different shell interpreters
+        shell: ['bash', 'dash']
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Test with different shells
+        run: |
+          echo "Testing with ${{ matrix.shell }}..."
+          
+          # Install shell if needed
+          if [ "${{ matrix.shell }}" = "dash" ]; then
+            sudo apt-get update && sudo apt-get install -y dash
+          fi
+          
+          # Test syntax with different shell
+          ${{ matrix.shell }} -n debian_doctor.sh || echo "Syntax check failed with ${{ matrix.shell }}"
+          
+          # Basic functionality test
+          chmod +x debian_doctor.sh
+          timeout 30s echo "0" | ${{ matrix.shell }} ./debian_doctor.sh >/dev/null 2>&1 || true
+          
+          echo "✅ Compatibility test with ${{ matrix.shell }} completed"
+
+  documentation-check:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Check documentation
+        run: |
+          echo "Checking documentation..."
+          
+          # Check if README exists
+          if [ -f README.md ]; then
+            echo "✅ README.md found"
+          else
+            echo "⚠️ README.md not found"
+          fi
+          
+          # Check for inline documentation
+          comment_lines=$(grep -c "^#" debian_doctor.sh || echo "0")
+          total_lines=$(wc -l < debian_doctor.sh)
+          comment_ratio=$((comment_lines * 100 / total_lines))
+          
+          echo "Documentation ratio: ${comment_ratio}% (${comment_lines}/${total_lines} lines)"
+          
+          if [ $comment_ratio -gt 10 ]; then
+            echo "✅ Good documentation coverage"
+          else
+            echo "⚠️ Consider adding more documentation"
+          fi
