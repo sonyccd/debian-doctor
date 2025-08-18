@@ -1,8 +1,6 @@
 # Debian Doctor
 
-A comprehensive system diagnostic and troubleshooting tool for Debian-based systems with a modern Terminal User Interface (TUI) built using Bubble Tea.
-
-> **Note**: This is a complete rewrite of the original bash script in Go, providing enhanced performance, better error handling, and a modern interactive interface.
+A comprehensive system diagnostic and troubleshooting tool for Debian-based systems. Features automatic system health checks and interactive problem diagnosis with fix suggestions.
 
 ## Features
 
@@ -23,86 +21,81 @@ A comprehensive system diagnostic and troubleshooting tool for Debian-based syst
 - **Package Issues**: APT package system problems
 - **Permission Issues**: File access problems
 
-### Modern TUI Features
-- Beautiful terminal interface with colors and animations
-- Progress bars for system checks
-- Interactive menus with keyboard navigation
-- Real-time status updates
-- Comprehensive logging
+### Interface Features
+- Simple text-based interface for universal compatibility
+- Real-time progress bars during system checks
+- Interactive menus with numbered options
+- Clear status updates and diagnostics
+- Comprehensive logging to file and console
 
 ## Installation
 
-### Prerequisites
-- Go 1.21 or later
-- Debian-based Linux system
-- Terminal with color support
+### Quick Install (Latest Release)
+
+```bash
+# Linux AMD64
+wget -O- https://github.com/yourusername/debian-doctor/releases/latest/download/debian-doctor-linux-amd64.tar.gz | tar xz
+sudo mv debian-doctor-linux-amd64 /usr/local/bin/debian-doctor
+
+# Linux ARM64
+wget -O- https://github.com/yourusername/debian-doctor/releases/latest/download/debian-doctor-linux-arm64.tar.gz | tar xz
+sudo mv debian-doctor-linux-arm64 /usr/local/bin/debian-doctor
+```
 
 ### Build from Source
 
-```bash
-git clone <repository>
-cd go-debian-doctor
-go mod tidy
-go build -o debian-doctor
-```
-
-### Install System-wide (Optional)
+Requirements:
+- Go 1.21 or higher
 
 ```bash
-sudo cp debian-doctor /usr/local/bin/
-sudo chmod +x /usr/local/bin/debian-doctor
+git clone https://github.com/yourusername/debian-doctor.git
+cd debian-doctor
+go build -o debian-doctor .
+sudo mv debian-doctor /usr/local/bin/
 ```
 
 ## Usage
 
 ### Interactive Mode (Default)
+
 ```bash
-./debian-doctor
+debian-doctor
+
+# Or with root privileges for full diagnostics
+sudo debian-doctor
 ```
 
-### Command Line Options
+### Command Line Mode
+
 ```bash
-./debian-doctor --help                    # Show help
-./debian-doctor --non-interactive         # Run without TUI
-./debian-doctor --verbose                 # Enable verbose output
+# Diagnose a specific issue
+debian-doctor --issue "network connection drops"
+
+# Show help
+debian-doctor --help
+
+# Enable verbose output
+debian-doctor --verbose
 ```
+
+### Interactive Menu Options
+
+1. **Run System Check** - Execute full diagnostic scan
+2. **Interactive Diagnosis** - Diagnose specific issues
+3. **View System Logs** - Display diagnostic history
+4. **Exit** - Terminate session
 
 ### Running with Root Privileges (Recommended)
+
 ```bash
-sudo ./debian-doctor
+sudo debian-doctor
 ```
 
-Running as root enables additional checks:
-- System service status
+Root access enables:
+- System service status checks
 - System logs analysis
-- Package system integrity
+- Package system integrity verification
 - Advanced network diagnostics
-
-## Navigation
-
-### Main Menu
-- `↑/↓` - Navigate menu options
-- `Enter` - Select option
-- `q` or `Ctrl+C` - Quit
-
-### During System Checks
-- System checks run automatically with progress indication
-- Press `Ctrl+C` to cancel
-
-### Results View
-- `↑/↓` - Scroll through results
-- `Esc` - Return to main menu
-
-### Interactive Diagnosis
-- `↑/↓` - Navigate diagnosis options
-- `Enter` - Select diagnosis type
-- `f` - Apply suggested fix (when available)
-- `Esc` - Go back
-
-### Fix Application
-- `y` - Confirm fix application
-- `n` - Cancel fix
-- `Esc` - Go back
 
 ## Architecture
 
@@ -120,7 +113,6 @@ debian-doctor/
 │   └── logger/           # Logging functionality
 ├── scripts/               # Development and build scripts
 ├── main.go               # Application entry point
-├── Makefile              # Build automation
 └── CLAUDE.md             # Project documentation for AI assistants
 ```
 
@@ -169,64 +161,33 @@ type Check interface {
 2. Add case to `runDiagnosis()` in `internal/tui/model.go`
 3. Add menu item to diagnosis menu
 
-## Comparison with Bash Version
+## Features Implemented
 
-### Advantages of Go Version
-- **Better Performance**: Compiled binary vs interpreted script
-- **Modern Interface**: Rich TUI with colors, progress bars, and animations
-- **Type Safety**: Go's type system prevents runtime errors
-- **Better Testing**: Comprehensive test suite with mocks
-- **Cross-compilation**: Can build for different architectures
-- **Structured Logging**: Better log management and formatting
-- **Memory Safety**: No shell injection vulnerabilities
-- **Dependency Management**: Go modules for reliable builds
-
-### Feature Parity
-- ✅ All system checks from bash version
-- ✅ Interactive diagnosis with fix suggestions
+### Core Functionality
+- ✅ All system checks (disk, memory, network, services, system info)
+- ✅ Interactive diagnosis menu system
+- ✅ Custom issue diagnosis via CLI
+- ✅ Fix suggestions with risk levels
 - ✅ Permission-aware operations
 - ✅ Comprehensive logging
-- ✅ Root/non-root operation modes
-- ✅ Error handling and recovery
+- ✅ Service-specific diagnosis
+- ✅ System log analysis
+- ✅ Advanced package management
+- ✅ Filesystem integrity checks
 
-### Additional Features
-- Progress indicators during checks
-- Real-time UI updates
-- Better error reporting
-- Structured configuration
-- Improved navigation
-- Professional appearance
+### User Interface
+- ✅ Simple text-based interface for universal compatibility
+- ✅ Real-time progress bars
+- ✅ Interactive prompts
+- ✅ Clear error messages
+- ✅ Status indicators
 
-## Current Capabilities vs Original Bash Script
-
-### ✅ **Fully Implemented**
-- All system checks (disk, memory, network, services, system info)
-- Interactive diagnosis menu system
-- Modern TUI with animations and visual feedback
-- Structured logging and configuration
-- Comprehensive test suite
-- Cross-platform builds
-
-### 🚧 **Partially Implemented**
-- **Fix Suggestions**: Currently shows fixes but doesn't execute them
-- **Package Management**: Basic checks implemented, advanced APT diagnostics pending
-
-### ❌ **Not Yet Implemented** (from original bash script)
-- **Fix Execution**: `offer_fix()` functionality - actually running suggested commands
-- **Custom Diagnosis**: Free-form issue description with general troubleshooting steps
-- **Advanced Package Analysis**: Comprehensive APT package system checks
-- **Service-Specific Diagnosis**: User input for specific service troubleshooting  
-- **File Permission Analysis**: Detailed permission diagnosis for user-specified paths
-- **Comprehensive Summary**: End-of-scan summary report generation
-- **System Log Analysis**: Parsing systemd journal and log files for errors
-- **Filesystem Integrity**: Read-only filesystem detection and remount suggestions
-
-### 🎯 **Roadmap**
-1. **Fix Execution System**: Implement safe command execution with confirmation
-2. **Advanced Diagnostics**: Add custom diagnosis and detailed service analysis
-3. **Log Analysis**: Implement comprehensive system log parsing
-4. **Package Management**: Enhanced APT system checks and fixes
-5. **Filesystem Checks**: Advanced filesystem integrity and permissions analysis
+### Safety Features
+- ✅ Fix confirmation prompts
+- ✅ Risk level indicators
+- ✅ Root permission checks
+- ✅ Reversible fixes where applicable
+- ✅ Safe command execution
 
 ## Troubleshooting
 
