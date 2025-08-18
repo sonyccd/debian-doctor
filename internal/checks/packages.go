@@ -126,7 +126,7 @@ func (c PackagesCheck) Run() CheckResult {
 
 // checkBrokenPackages finds packages in broken state
 func (c PackagesCheck) checkBrokenPackages() []string {
-	var broken []string
+	broken := []string{}
 
 	// Check with dpkg
 	cmd := exec.Command("dpkg", "-l")
@@ -168,7 +168,7 @@ func (c PackagesCheck) checkBrokenPackages() []string {
 
 // checkHeldPackages finds packages on hold
 func (c PackagesCheck) checkHeldPackages() []string {
-	var held []string
+	held := []string{}
 
 	cmd := exec.Command("apt-mark", "showhold")
 	output, err := cmd.Output()
@@ -228,7 +228,7 @@ func (c PackagesCheck) checkAutoremovablePackages() int {
 
 // checkAPTSources validates APT source lists
 func (c PackagesCheck) checkAPTSources() []string {
-	var invalid []string
+	invalid := []string{}
 
 	cmd := exec.Command("apt", "update", "--dry-run")
 	output, err := cmd.CombinedOutput()
@@ -310,7 +310,7 @@ func (c PackagesCheck) checkUnattendedUpgrades() string {
 // removeDuplicates removes duplicate strings from a slice
 func removeDuplicates(slice []string) []string {
 	keys := make(map[string]bool)
-	var result []string
+	result := []string{}
 
 	for _, item := range slice {
 		if !keys[item] {

@@ -200,7 +200,7 @@ func DiagnoseServiceIssues() Diagnosis {
 
 // checkFailedSystemdServices finds services in failed state
 func checkFailedSystemdServices() []string {
-	var failed []string
+	failed := []string{}
 
 	cmd := exec.Command("systemctl", "list-units", "--failed", "--type=service", "--no-legend")
 	output, err := cmd.Output()
@@ -227,7 +227,7 @@ func checkFailedSystemdServices() []string {
 
 // checkServicesInErrorState finds services in error/activating state
 func checkServicesInErrorState() []string {
-	var errorServices []string
+	errorServices := []string{}
 
 	cmd := exec.Command("systemctl", "list-units", "--type=service", "--state=activating,deactivating", "--no-legend")
 	output, err := cmd.Output()
@@ -254,7 +254,7 @@ func checkServicesInErrorState() []string {
 
 // checkCriticalServices finds disabled critical services
 func checkCriticalServices() []string {
-	var disabled []string
+	disabled := []string{}
 
 	criticalServicesList := []string{
 		"networking", "systemd-networkd", "NetworkManager",
@@ -284,7 +284,7 @@ func checkCriticalServices() []string {
 
 // checkFlappingServices finds services restarting frequently
 func checkFlappingServices() []string {
-	var flapping []string
+	flapping := []string{}
 
 	cmd := exec.Command("journalctl", "--since", "1 hour ago", "--grep", "Started\\|Stopped", "--no-pager")
 	output, err := cmd.Output()
@@ -317,7 +317,7 @@ func checkFlappingServices() []string {
 
 // checkMaskedServices finds masked services
 func checkMaskedServices() []string {
-	var masked []string
+	masked := []string{}
 
 	cmd := exec.Command("systemctl", "list-unit-files", "--type=service", "--state=masked", "--no-legend")
 	output, err := cmd.Output()
@@ -344,7 +344,7 @@ func checkMaskedServices() []string {
 
 // checkServiceDependencies finds dependency issues
 func checkServiceDependencies() []string {
-	var issues []string
+	issues := []string{}
 
 	// Check for circular dependencies
 	cmd := exec.Command("systemd-analyze", "verify")
@@ -368,7 +368,7 @@ func checkServiceDependencies() []string {
 // Helper functions for generating commands
 
 func generateServiceLogCommands(services []string) []string {
-	var commands []string
+	commands := []string{}
 	for _, service := range services {
 		commands = append(commands, fmt.Sprintf("journalctl -u %s --since '1 hour ago' --no-pager", service))
 	}
@@ -376,7 +376,7 @@ func generateServiceLogCommands(services []string) []string {
 }
 
 func generateEnableServiceCommands(services []string) []string {
-	var commands []string
+	commands := []string{}
 	for _, service := range services {
 		commands = append(commands, fmt.Sprintf("systemctl enable %s", service))
 		commands = append(commands, fmt.Sprintf("systemctl start %s", service))
@@ -385,7 +385,7 @@ func generateEnableServiceCommands(services []string) []string {
 }
 
 func generateDisableServiceCommands(services []string) []string {
-	var commands []string
+	commands := []string{}
 	for _, service := range services {
 		commands = append(commands, fmt.Sprintf("systemctl stop %s", service))
 		commands = append(commands, fmt.Sprintf("systemctl disable %s", service))
@@ -394,7 +394,7 @@ func generateDisableServiceCommands(services []string) []string {
 }
 
 func generateFlappingAnalysisCommands(services []string) []string {
-	var commands []string
+	commands := []string{}
 	for _, service := range services {
 		commands = append(commands, fmt.Sprintf("systemctl status %s", service))
 		commands = append(commands, fmt.Sprintf("journalctl -u %s --since '2 hours ago' | grep -E '(Started|Stopped|Failed)' | tail -10", service))
@@ -404,7 +404,7 @@ func generateFlappingAnalysisCommands(services []string) []string {
 
 func removeDuplicateServiceStrings(slice []string) []string {
 	keys := make(map[string]bool)
-	var result []string
+	result := []string{}
 
 	for _, item := range slice {
 		if !keys[item] {

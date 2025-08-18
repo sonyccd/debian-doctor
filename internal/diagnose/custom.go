@@ -53,7 +53,7 @@ func DiagnoseCustomIssue(userDescription string) Diagnosis {
 
 // extractKeywords identifies relevant keywords from user description
 func extractKeywords(description string) []string {
-	var keywords []string
+	keywords := []string{}
 	
 	// Define keyword categories and their associated terms
 	keywordCategories := map[string][]string{

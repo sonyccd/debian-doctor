@@ -230,7 +230,7 @@ func checkJournalSize() float64 {
 
 // checkPersistentErrors looks for repeated error patterns
 func checkPersistentErrors() []string {
-	var errors []string
+	errors := []string{}
 
 	cmd := exec.Command("journalctl", "-p", "err", "--since", "24 hours ago", "--no-pager")
 	output, err := cmd.Output()
@@ -270,7 +270,7 @@ func checkPersistentErrors() []string {
 
 // checkLogRotation checks for log rotation issues
 func checkLogRotation() []string {
-	var issues []string
+	issues := []string{}
 
 	// Check logrotate status
 	cmd := exec.Command("logrotate", "-d", "/etc/logrotate.conf")
@@ -317,7 +317,7 @@ func checkLogRotation() []string {
 
 // checkFailedServices returns services that have recently failed
 func checkFailedServices() []string {
-	var services []string
+	services := []string{}
 
 	cmd := exec.Command("systemctl", "--failed", "--no-legend", "--no-pager")
 	output, err := cmd.Output()
@@ -362,7 +362,7 @@ func checkCoreDumps() int {
 
 // checkKernelIssues looks for kernel-related problems
 func checkKernelIssues() []string {
-	var issues []string
+	issues := []string{}
 
 	cmd := exec.Command("dmesg")
 	output, err := cmd.Output()
