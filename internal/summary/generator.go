@@ -3,7 +3,6 @@ package summary
 import (
 	"fmt"
 	"os"
-	"runtime"
 	"strings"
 	"time"
 
@@ -216,11 +215,9 @@ func (g *Generator) gatherResourceStatus(summary *SystemSummary) error {
 		}
 	}
 	
-	// Load average (Linux/Unix only)
-	if runtime.GOOS != "windows" {
-		if avg, err := getLoadAverage(); err == nil {
-			status.LoadAverage = avg
-		}
+	// Load average (Linux only)
+	if avg, err := getLoadAverage(); err == nil {
+		status.LoadAverage = avg
 	}
 	
 	summary.ResourceStatus = status
@@ -415,7 +412,7 @@ func (s *SystemSummary) FormatReport() string {
 			float64(s.ResourceStatus.SwapUsed)/(1024*1024*1024),
 			s.ResourceStatus.SwapPercent))
 	}
-	if runtime.GOOS != "windows" && s.ResourceStatus.LoadAverage[0] > 0 {
+	if s.ResourceStatus.LoadAverage[0] > 0 {
 		b.WriteString(fmt.Sprintf("  Load Average: %.2f, %.2f, %.2f\n",
 			s.ResourceStatus.LoadAverage[0],
 			s.ResourceStatus.LoadAverage[1],

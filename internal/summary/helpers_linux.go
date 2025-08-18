@@ -1,4 +1,4 @@
-//go:build !windows
+// Linux-specific helper functions for system summary generation
 
 package summary
 
