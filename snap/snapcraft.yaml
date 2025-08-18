@@ -1,0 +1,78 @@
+name: debian-doctor
+base: core22
+version: '1.0.0'
+summary: Comprehensive system diagnostic and troubleshooting tool
+description: |
+  Debian Doctor is a comprehensive system diagnostic and troubleshooting tool
+  for Debian-based systems. It performs automatic system health checks and
+  provides interactive problem diagnosis with fix suggestions.
+
+  Features include:
+  * System health checks (disk, memory, network, services)
+  * Interactive diagnosis for common issues
+  * Automated fix suggestions with safety checks
+  * Comprehensive system reporting
+  * File permission analysis
+  * Simple text-based interface for universal compatibility
+
+  The tool can be run in interactive mode for guided troubleshooting or
+  command-line mode for specific issue diagnosis. It supports both regular
+  user and root access modes, with additional diagnostic capabilities when
+  run with root privileges.
+
+grade: stable
+confinement: classic
+
+contact: https://github.com/sonyccd/debian-doctor/issues
+issues: https://github.com/sonyccd/debian-doctor/issues
+source-code: https://github.com/sonyccd/debian-doctor
+website: https://github.com/sonyccd/debian-doctor
+
+apps:
+  debian-doctor:
+    command: bin/debian-doctor
+    plugs:
+      - network
+      - network-bind
+      - system-observe
+      - hardware-observe
+      - mount-observe
+      - log-observe
+      - process-control
+      - home
+
+parts:
+  debian-doctor:
+    plugin: go
+    source: .
+    build-snaps: [go/1.22/stable]
+    build-environment:
+      - CGO_ENABLED: "0"
+    override-build: |
+      # Get version from git or environment
+      if [ -n "$SNAPCRAFT_PROJECT_VERSION" ]; then
+        VERSION="$SNAPCRAFT_PROJECT_VERSION"
+      else
+        VERSION=$(git describe --tags --always --dirty 2>/dev/null || echo "1.0.0")
+      fi
+      
+      # Build with version info
+      go build -ldflags="-s -w -X main.version=${VERSION}" -o $SNAPCRAFT_PART_INSTALL/bin/debian-doctor .
+      
+      # Install man page
+      mkdir -p $SNAPCRAFT_PART_INSTALL/usr/share/man/man1
+      cp debian/debian-doctor.1 $SNAPCRAFT_PART_INSTALL/usr/share/man/man1/
+      gzip $SNAPCRAFT_PART_INSTALL/usr/share/man/man1/debian-doctor.1
+      
+      # Install documentation
+      mkdir -p $SNAPCRAFT_PART_INSTALL/usr/share/doc/debian-doctor
+      cp README.md $SNAPCRAFT_PART_INSTALL/usr/share/doc/debian-doctor/
+      cp CLAUDE.md $SNAPCRAFT_PART_INSTALL/usr/share/doc/debian-doctor/
+    
+    stage-packages:
+      - libc6
+      - coreutils
+      - util-linux
+      - procps
+      - net-tools
+      - iproute2

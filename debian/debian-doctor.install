@@ -1,0 +1,4 @@
+debian-doctor usr/bin/
+README.md usr/share/doc/debian-doctor/
+CLAUDE.md usr/share/doc/debian-doctor/
+debian/debian-doctor.1 usr/share/man/man1/

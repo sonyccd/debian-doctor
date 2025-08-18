@@ -1,0 +1,38 @@
+#!/usr/bin/make -f
+
+build:
+	# Binary is already built, nothing to do
+
+binary-indep:
+	# No arch-independent files
+
+binary-arch:
+	mkdir -p debian/debian-doctor/usr/bin
+	mkdir -p debian/debian-doctor/usr/share/man/man1
+	mkdir -p debian/debian-doctor/usr/share/doc/debian-doctor
+	mkdir -p debian/debian-doctor/DEBIAN
+	
+	# Install binary
+	cp debian-doctor debian/debian-doctor/usr/bin/debian-doctor
+	chmod 755 debian/debian-doctor/usr/bin/debian-doctor
+	
+	# Install man page
+	cp debian/debian-doctor.1 debian/debian-doctor/usr/share/man/man1/
+	gzip -9 debian/debian-doctor/usr/share/man/man1/debian-doctor.1
+	
+	# Install documentation
+	cp README.md debian/debian-doctor/usr/share/doc/debian-doctor/
+	cp CLAUDE.md debian/debian-doctor/usr/share/doc/debian-doctor/
+	
+	# Generate control file
+	dpkg-gencontrol -pdebian-doctor -Pdebian/debian-doctor
+	
+	# Build package
+	dpkg-deb --build debian/debian-doctor ..
+
+binary: binary-indep binary-arch
+
+clean:
+	rm -rf debian/debian-doctor
+
+.PHONY: build binary binary-arch binary-indep clean

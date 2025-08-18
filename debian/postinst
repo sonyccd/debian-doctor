@@ -1,0 +1,36 @@
+#!/bin/bash
+set -e
+
+case "$1" in
+    configure)
+        # Update man page database
+        if command -v mandb >/dev/null 2>&1; then
+            mandb -q
+        fi
+        
+        # Create log directory if it doesn't exist
+        if [ ! -d "/var/log/debian-doctor" ]; then
+            mkdir -p /var/log/debian-doctor
+            chmod 755 /var/log/debian-doctor
+        fi
+        
+        # Ensure binary has correct permissions
+        chmod 755 /usr/bin/debian-doctor
+        
+        echo "debian-doctor installed successfully!"
+        echo "Run 'debian-doctor' to start system diagnosis."
+        echo "Use 'man debian-doctor' for detailed documentation."
+        ;;
+    
+    abort-upgrade|abort-remove|abort-deconfigure)
+        ;;
+    
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0
