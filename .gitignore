@@ -1,0 +1,171 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Build output
+debian-doctor
+debian-doctor-linux-*
+debian-doctor-darwin-*
+debian-doctor-windows-*
+dist/
+build/
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Log files
+*.log
+/tmp/
+logs/
+
+# Coverage reports
+coverage.txt
+coverage.html
+coverage.out
+*.cover
+
+# Debug files
+debug
+debug.test
+*.pprof
+
+# Local configuration
+config.local.yaml
+config.local.json
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+*.old
+
+# Operating System Files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Claude artifacts
+.claude/
+
+# Documentation build
+docs/_build/
+docs/_site/
+
+# Python (if any scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archives
+*.tar
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# Debian package build files
+*.deb
+debian/files
+debian/*.log
+debian/*.substvars
+debian/debian-doctor/
+
+# Snap package files
+*.snap
+parts/
+prime/
+stage/
+
+# AppImage files
+*.AppImage
+*.AppImage.zsync
+appimage-build/
+
+# Test artifacts
+test-results/
+test-reports/
+*.test.json
+
+# Benchmark results
+bench.txt
+benchmarks/
+
+# Profile outputs
+*.prof
+*.mem
+
+# Binary analysis
+*.dump
+*.core
+
+# Generated files
+generated/
+gen/
+
+# Cache directories
+.cache/
+cache/
+
+# Session files
+*.session
+*.pid
+
+# Lock files (except go.mod/go.sum)
+*.lock
+!go.sum
+
+# Backup directories
+backup/
+backups/
+*.backup/
+
+# Personal notes
+notes.md
+TODO.md
+NOTES.txt
+personal/
+
+# Sensitive data
+secrets/
+credentials/
+*.pem
+*.key
+*.crt
+*.p12
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Configuration overrides
+override.yaml
+override.json
+local.yaml
+local.json
