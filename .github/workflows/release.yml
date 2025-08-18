@@ -196,7 +196,7 @@ jobs:
           cat CHANGELOG.md
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: release/*
           body_path: CHANGELOG.md
@@ -305,7 +305,7 @@ jobs:
 
       - name: Create tag and release
         if: steps.check_changes.outputs.GO_CHANGED == 'true'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.next_version.outputs.NEW_VERSION }}
           name: Debian Doctor ${{ steps.next_version.outputs.NEW_VERSION }}
