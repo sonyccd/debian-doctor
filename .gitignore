@@ -25,6 +25,8 @@ debian-doctor-darwin-*
 debian-doctor-windows-*
 dist/
 build/
+snap/build/
+snap/install/
 
 # IDE specific files
 .vscode/
@@ -106,9 +108,13 @@ debian/tmp/
 
 # Snap package files
 *.snap
+*.snap.sha256
 parts/
 prime/
 stage/
+snap/.snapcraft/
+snapcraft.yaml.bak
+*.assert
 
 # AppImage files
 *.AppImage

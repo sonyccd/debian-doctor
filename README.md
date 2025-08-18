@@ -1,69 +1,109 @@
 # Debian Doctor
 
-A comprehensive system diagnostic and troubleshooting tool for Debian-based systems. Features automatic system health checks and interactive problem diagnosis with fix suggestions.
+[![Release](https://img.shields.io/github/v/release/sonyccd/debian-doctor)](https://github.com/sonyccd/debian-doctor/releases/latest)
+[![Build Status](https://github.com/sonyccd/debian-doctor/workflows/Release/badge.svg)](https://github.com/sonyccd/debian-doctor/actions)
+[![Snap Store](https://snapcraft.io/debian-doctor/badge.svg)](https://snapcraft.io/debian-doctor)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sonyccd/debian-doctor)](https://goreportcard.com/report/github.com/sonyccd/debian-doctor)
+[![License](https://img.shields.io/github/license/sonyccd/debian-doctor)](LICENSE)
+
+A comprehensive system diagnostic and troubleshooting tool specifically designed for Debian-based Linux systems (Debian, Ubuntu, Mint, etc.). Features automatic system health checks and interactive problem diagnosis with fix suggestions.
+
+## 🎯 Quick Start
+
+```bash
+# Install via Snap (recommended)
+sudo snap install debian-doctor
+
+# Run system diagnosis
+debian-doctor
+```
 
 ## Features
 
-### System Checks
+### 🔍 System Checks
 - **System Information**: OS version, kernel, hostname, uptime
-- **Disk Space Analysis**: Usage monitoring with configurable thresholds
-- **Memory Usage**: RAM and swap monitoring
-- **Network Configuration**: Interface status, IP addresses, DNS
+- **Disk Space Analysis**: Usage monitoring with configurable thresholds (85%/95% warnings)
+- **Memory Usage**: RAM and swap monitoring with utilization metrics
+- **Network Configuration**: Interface status, IP addresses, DNS resolution
 - **System Services**: Critical service health monitoring (requires root)
+- **Filesystem Health**: Mount point validation and disk errors
+- **Package System**: APT integrity and broken package detection
+- **Log Analysis**: System error log scanning and reporting
 
-### Interactive Diagnosis
-- **Boot Issues**: System startup problems
-- **Performance Issues**: CPU, memory, and load analysis
-- **Network Issues**: Connectivity troubleshooting
-- **Disk Issues**: Storage problems and cleanup suggestions
-- **Service Issues**: Service management problems
-- **Display Issues**: Graphics and X11 problems
-- **Package Issues**: APT package system problems
-- **Permission Issues**: File access problems
+### 🩺 Interactive Diagnosis
+- **Boot Issues**: System startup problems and service failures
+- **Performance Issues**: CPU, memory, and load analysis with optimization tips
+- **Network Issues**: Connectivity troubleshooting and DNS resolution
+- **Disk Issues**: Storage problems, cleanup suggestions, and filesystem errors
+- **Service Issues**: Service management problems and dependency resolution
+- **Display Issues**: Graphics, X11, and display manager problems
+- **Package Issues**: APT package system problems and repository health
+- **Permission Issues**: File access problems and security analysis
 
-### Interface Features
-- Simple text-based interface for universal compatibility
-- Real-time progress bars during system checks
-- Interactive menus with numbered options
-- Clear status updates and diagnostics
-- Comprehensive logging to file and console
+### 💻 Interface Features
+- **80s Retro Design**: Classic monospace terminal aesthetic
+- **Universal Compatibility**: Simple text-based interface works everywhere
+- **Real-time Progress**: ASCII progress bars during system checks
+- **Interactive Menus**: Numbered options for easy navigation
+- **Color-coded Output**: Status indicators (✓ ⚠ ✗ ℹ) for quick visual feedback
+- **Comprehensive Logging**: Dual output to file and console
+- **Permission Awareness**: Adapts functionality based on user privileges
 
 ## Installation
 
-### Snap Package (Recommended)
+### 📦 Snap Package (Recommended)
+
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/debian-doctor)
 
 ```bash
-# Install from Snap Store
+# Install stable version
 sudo snap install debian-doctor
 
-# For development/edge version
+# Install development version (latest from main branch)
 sudo snap install debian-doctor --edge
 
 # Run the application
 debian-doctor
+
+# Check version
+debian-doctor --version
 ```
 
-### Debian Package
+**Benefits of Snap installation:**
+- ✅ Automatic updates
+- ✅ Sandboxed security with classic confinement
+- ✅ Works on all major Linux distributions
+- ✅ No dependency conflicts
+
+### 📋 Debian Package
 
 ```bash
 # Download and install latest .deb package
 wget https://github.com/sonyccd/debian-doctor/releases/latest/download/debian-doctor_1.0.0-1_amd64.deb
 sudo dpkg -i debian-doctor_1.0.0-1_amd64.deb
 
-# Or install dependencies if needed
+# Install missing dependencies if needed
 sudo apt-get install -f
+
+# Verify installation
+debian-doctor --version
+man debian-doctor
 ```
 
-### Quick Install (Binary Release)
+### ⚡ Quick Install (Binary Release)
 
 ```bash
 # Linux AMD64
 wget -O- https://github.com/sonyccd/debian-doctor/releases/latest/download/debian-doctor-linux-amd64.tar.gz | tar xz
 sudo mv debian-doctor-linux-amd64 /usr/local/bin/debian-doctor
 
-# Linux ARM64
+# Linux ARM64 (Raspberry Pi, etc.)
 wget -O- https://github.com/sonyccd/debian-doctor/releases/latest/download/debian-doctor-linux-arm64.tar.gz | tar xz
 sudo mv debian-doctor-linux-arm64 /usr/local/bin/debian-doctor
+
+# Linux ARMv7 (32-bit ARM devices)
+wget -O- https://github.com/sonyccd/debian-doctor/releases/latest/download/debian-doctor-linux-armv7.tar.gz | tar xz
+sudo mv debian-doctor-linux-armv7 /usr/local/bin/debian-doctor
 ```
 
 ### Build from Source
