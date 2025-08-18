@@ -45,11 +45,15 @@ parts:
   debian-doctor:
     plugin: go
     source: .
-    go-channel: 1.21/stable
+    build-snaps: [go/1.21/stable]
     build-environment:
       - CGO_ENABLED: "0"
       - GO111MODULE: "on"
     override-build: |
+      # Ensure we're using the correct Go version
+      export PATH="/snap/go/current/bin:$PATH"
+      go version
+      
       # Get version from git or environment
       if [ -n "$SNAPCRAFT_PROJECT_VERSION" ]; then
         VERSION="$SNAPCRAFT_PROJECT_VERSION"
