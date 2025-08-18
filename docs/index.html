@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debian Doctor - System Diagnostic Tool</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="logo">🩺</span>
+                <span class="brand-text">Debian Doctor</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#features">Features</a></li>
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="usage.html">Usage</a></li>
+                <li><a href="https://github.com/sonyccd/debian-doctor" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h1 class="hero-title">🩺 Debian Doctor</h1>
+            <p class="hero-subtitle">Comprehensive system diagnostic and troubleshooting tool for Debian-based systems</p>
+            <div class="hero-buttons">
+                <a href="https://github.com/sonyccd/debian-doctor/archive/refs/heads/main.zip" class="btn btn-primary">Download</a>
+                <a href="installation.html" class="btn btn-secondary">Get Started</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Key Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>Disk Space Analysis</h3>
+                    <p>Monitor disk usage with configurable warning thresholds and identify space-consuming directories</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Memory Monitoring</h3>
+                    <p>Track RAM and swap usage, detect memory leaks, and optimize system performance</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>Service Health Checks</h3>
+                    <p>Monitor critical system services and automatically detect failed or degraded services</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Network Diagnostics</h3>
+                    <p>Test connectivity, DNS resolution, and network configuration issues</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h3>Package System Integrity</h3>
+                    <p>Verify APT configuration, check for broken packages, and validate repositories</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Interactive Troubleshooting</h3>
+                    <p>Guided diagnosis with specific fixes and solutions for common problems</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo">
+        <div class="container">
+            <h2>See It In Action</h2>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="terminal-button red"></span>
+                    <span class="terminal-button yellow"></span>
+                    <span class="terminal-button green"></span>
+                </div>
+                <pre class="terminal-content">
+<span class="prompt">$</span> sudo ./debian_doctor.sh
+
+<span class="header">═══════════════════════════════════════════════════════════════</span>
+<span class="header">                     🩺 DEBIAN DOCTOR 🩺                      </span>
+<span class="header">           System Diagnostic and Troubleshooting Tool          </span>
+<span class="header">═══════════════════════════════════════════════════════════════</span>
+
+<span class="section">━━━━━━━━━━━━━━━━━━━━━━ System Information ━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="info">ℹ</span> OS: Ubuntu 22.04.3 LTS
+<span class="info">ℹ</span> Kernel: 5.15.0-91-generic
+<span class="info">ℹ</span> Architecture: x86_64
+<span class="info">ℹ</span> Uptime: 15 days, 3:42
+
+<span class="section">━━━━━━━━━━━━━━━━━━━━━━ Disk Space Check ━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="success">✓</span> Root filesystem (/): 45% used (OK)
+<span class="warning">⚠</span> /home: 87% used (WARNING - Above 85% threshold)
+<span class="success">✓</span> /var: 62% used (OK)
+
+<span class="section">━━━━━━━━━━━━━━━━━━━━━━ Memory Status ━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="success">✓</span> RAM Usage: 4.2GB / 16GB (26%)
+<span class="success">✓</span> Swap Usage: 0.5GB / 4GB (12%)
+                </pre>
+            </div>
+        </div>
+    </section>
+
+    <section class="installation">
+        <div class="container">
+            <h2>Quick Installation</h2>
+            <div class="install-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Clone the Repository</h3>
+                    <pre><code>git clone https://github.com/sonyccd/debian-doctor.git
+cd debian-doctor</code></pre>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Make Executable</h3>
+                    <pre><code>chmod +x debian_doctor.sh</code></pre>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Run Diagnostic</h3>
+                    <pre><code>sudo ./debian_doctor.sh</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="compatibility">
+        <div class="container">
+            <h2>Compatibility</h2>
+            <div class="os-grid">
+                <div class="os-card">
+                    <img src="assets/images/ubuntu.svg" alt="Ubuntu" class="os-logo">
+                    <span>Ubuntu</span>
+                </div>
+                <div class="os-card">
+                    <img src="assets/images/debian.svg" alt="Debian" class="os-logo">
+                    <span>Debian</span>
+                </div>
+                <div class="os-card">
+                    <img src="assets/images/mint.svg" alt="Linux Mint" class="os-logo">
+                    <span>Linux Mint</span>
+                </div>
+                <div class="os-card">
+                    <img src="assets/images/popos.svg" alt="Pop!_OS" class="os-logo">
+                    <span>Pop!_OS</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Debian Doctor</h3>
+                    <p>Open-source system diagnostic tool for Debian-based Linux distributions</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Links</h3>
+                    <ul>
+                        <li><a href="https://github.com/sonyccd/debian-doctor">GitHub Repository</a></li>
+                        <li><a href="https://github.com/sonyccd/debian-doctor/issues">Report Issues</a></li>
+                        <li><a href="https://github.com/sonyccd/debian-doctor/blob/main/LICENSE">License</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Documentation</h3>
+                    <ul>
+                        <li><a href="installation.html">Installation Guide</a></li>
+                        <li><a href="usage.html">Usage Documentation</a></li>
+                        <li><a href="https://github.com/sonyccd/debian-doctor/blob/main/CLAUDE.md">Developer Guide</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Debian Doctor. Licensed under MIT License.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

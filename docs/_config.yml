@@ -1,0 +1,45 @@
+# Jekyll configuration for GitHub Pages
+title: Debian Doctor
+description: Comprehensive system diagnostic and troubleshooting tool for Debian-based systems
+baseurl: "/debian-doctor"
+url: "https://sonyccd.github.io"
+
+# Theme settings (GitHub Pages supports limited themes)
+theme: null
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Exclude files from build
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+
+# GitHub repository
+github:
+  repository_url: https://github.com/sonyccd/debian-doctor
+  repository_name: debian-doctor
+
+# Default settings
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+      
+# SEO settings
+twitter:
+  card: summary
+  
+logo: /assets/images/favicon.svg
+
+# Social links
+social:
+  name: Debian Doctor
+  links:
+    - https://github.com/sonyccd/debian-doctor
