@@ -1,6 +1,6 @@
 # Jekyll configuration for GitHub Pages
 title: Debian Doctor
-description: Comprehensive system diagnostic and troubleshooting tool for Debian-based systems
+description: Comprehensive system diagnostic and troubleshooting tool for Debian Linux and derivatives (Ubuntu, Mint, Pop!_OS, etc.)
 baseurl: "/debian-doctor"
 url: "https://sonyccd.github.io"
 

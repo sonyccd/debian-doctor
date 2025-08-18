@@ -135,7 +135,7 @@
     <nav class="navbar">
         <div class="container">
             <div class="nav-brand">
-                <span class="logo">🩺</span>
+                <span class="logo">💊</span>
                 <span class="brand-text">Debian Doctor</span>
             </div>
             <ul class="nav-menu">
@@ -165,7 +165,7 @@
 
             <section id="requirements">
                 <h2>System Requirements</h2>
-                <p>Debian Doctor is designed to work on Debian-based Linux distributions. Before installation, ensure your system meets these requirements:</p>
+                <p>Debian Doctor is designed specifically for Debian Linux and all Debian-based distributions. Before installation, ensure your system meets these requirements:</p>
                 
                 <h3>Operating System</h3>
                 <ul>
@@ -188,7 +188,23 @@
             <section id="installation">
                 <h2>Installation Methods</h2>
 
-                <h3>Method 1: Using Git (Recommended)</h3>
+                <h3>Method 1: Install from Snap Store (Recommended)</h3>
+                <p>The easiest way to install Debian Doctor is through the Snap Store. Snaps work on all major Linux distributions.</p>
+                <a href="https://snapcraft.io/debian-doctor" style="display: inline-block; margin: 1rem 0;">
+                    <img alt="Get it from the Snap Store" src="https://snapcraft.io/en/light/install.svg" />
+                </a>
+                <p>Or install via command line:</p>
+                <pre><code># Install from Snap Store
+sudo snap install debian-doctor
+
+# Grant necessary permissions
+sudo snap connect debian-doctor:system-observe
+sudo snap connect debian-doctor:hardware-observe
+
+# Run the tool
+debian-doctor</code></pre>
+
+                <h3>Method 2: Using Git</h3>
                 <p>This method allows for easy updates and version management.</p>
                 <pre><code># Clone the repository
 git clone https://github.com/sonyccd/debian-doctor.git
@@ -202,7 +218,7 @@ chmod +x debian_doctor.sh
 # Optionally, make the test script executable
 chmod +x debian_doctor_tests.sh</code></pre>
 
-                <h3>Method 2: Direct Download</h3>
+                <h3>Method 3: Direct Download</h3>
                 <p>Download the script directly without git.</p>
                 <pre><code># Download the latest release
 wget https://github.com/sonyccd/debian-doctor/archive/refs/heads/main.zip
@@ -216,7 +232,7 @@ cd debian-doctor-main
 # Make the script executable
 chmod +x debian_doctor.sh</code></pre>
 
-                <h3>Method 3: cURL Installation</h3>
+                <h3>Method 4: cURL Installation</h3>
                 <p>Quick one-liner installation using cURL.</p>
                 <pre><code># Download and extract in one command
 curl -L https://github.com/sonyccd/debian-doctor/archive/refs/heads/main.tar.gz | tar xz
@@ -352,7 +368,7 @@ sudo apt-get install --only-upgrade bash</code></pre>
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom">
-                <p>&copy; 2024 Debian Doctor. Licensed under MIT License.</p>
+                <p>&copy; 2025 Debian Doctor. Made with ❤️  in Chapel Hill, North Carolina by Brad Bazemore. Licensed under MIT License.</p>
             </div>
         </div>
     </footer>

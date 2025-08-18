@@ -1,4 +1,4 @@
-# Debian Doctor
+# 💊 Debian Doctor
 
 [![Release](https://img.shields.io/github/v/release/sonyccd/debian-doctor)](https://github.com/sonyccd/debian-doctor/releases/latest)
 [![Build Status](https://github.com/sonyccd/debian-doctor/workflows/Release/badge.svg)](https://github.com/sonyccd/debian-doctor/actions)
@@ -6,7 +6,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/sonyccd/debian-doctor)](https://goreportcard.com/report/github.com/sonyccd/debian-doctor)
 [![License](https://img.shields.io/github/license/sonyccd/debian-doctor)](LICENSE)
 
-A comprehensive system diagnostic and troubleshooting tool specifically designed for Debian-based Linux systems (Debian, Ubuntu, Mint, etc.). Features automatic system health checks and interactive problem diagnosis with fix suggestions.
+A comprehensive system diagnostic and troubleshooting tool specifically designed for Debian Linux and Debian-based distributions (Ubuntu, Linux Mint, Pop!_OS, Elementary OS, etc.). Features automatic system health checks and interactive problem diagnosis with fix suggestions.
 
 ## 🎯 Quick Start
 
@@ -53,7 +53,9 @@ debian-doctor
 
 ### 📦 Snap Package (Recommended)
 
-[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/debian-doctor)
+<a href="https://snapcraft.io/debian-doctor">
+  <img alt="Get it from the Snap Store" src="https://snapcraft.io/en/light/install.svg" />
+</a>
 
 ```bash
 # Install stable version
@@ -450,7 +452,9 @@ Contributors are recognized in:
 
 ## License
 
-This project maintains the same license as the original Debian Doctor bash script.
+This project is licensed under the MIT License.
+
+© 2025 Debian Doctor. Made with ❤️ in Chapel Hill, North Carolina by Brad Bazemore.
 
 ## Support
 
