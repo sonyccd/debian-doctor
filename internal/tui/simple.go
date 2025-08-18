@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -11,6 +12,7 @@ import (
 	"github.com/debian-doctor/debian-doctor/internal/checks"
 	"github.com/debian-doctor/debian-doctor/internal/diagnose"
 	"github.com/debian-doctor/debian-doctor/internal/fixes"
+	"github.com/debian-doctor/debian-doctor/internal/summary"
 	"github.com/debian-doctor/debian-doctor/pkg/config"
 	"github.com/debian-doctor/debian-doctor/pkg/logger"
 )
@@ -141,6 +143,13 @@ func (ui *SimpleUI) runSystemCheck() {
 	
 	// Show results
 	ui.showResults(results)
+	
+	// Generate and show comprehensive summary
+	fmt.Println()
+	if ui.askYesNo("Generate comprehensive system report? (y/n): ") {
+		ui.showComprehensiveSummary(results)
+	}
+	
 	ui.waitForKey()
 }
 
@@ -241,6 +250,7 @@ func (ui *SimpleUI) runInteractiveDiagnosis() {
 		{"DISPLAY ISSUES", "Graphics, resolution, or X11 problems"},
 		{"PACKAGE ISSUES", "APT package manager or dependency problems"},
 		{"PERMISSION ISSUES", "File access or user permission problems"},
+		{"FILE PERMISSION ANALYSIS", "Analyze permissions for a specific file or directory"},
 		{"CUSTOM ISSUE", "Describe your own problem for general troubleshooting"},
 	}
 	
@@ -250,7 +260,7 @@ func (ui *SimpleUI) runInteractiveDiagnosis() {
 		fmt.Println()
 	}
 	
-	choice := ui.getInput("Select diagnosis type (1-11): ")
+	choice := ui.getInput(fmt.Sprintf("Select diagnosis type (1-%d): ", len(options)))
 	choiceNum, err := strconv.Atoi(choice)
 	if err != nil || choiceNum < 1 || choiceNum > len(options) {
 		ui.showError("Invalid choice")
@@ -258,7 +268,13 @@ func (ui *SimpleUI) runInteractiveDiagnosis() {
 	}
 	
 	selectedOption := options[choiceNum-1]
-	ui.runDiagnosis(selectedOption.name)
+	
+	// Special handling for file permission analysis
+	if selectedOption.name == "FILE PERMISSION ANALYSIS" {
+		ui.runFilePermissionAnalysis()
+	} else {
+		ui.runDiagnosis(selectedOption.name)
+	}
 }
 
 func (ui *SimpleUI) runDiagnosis(issueType string) {
@@ -297,6 +313,8 @@ func (ui *SimpleUI) runDiagnosis(issueType string) {
 		diagnosis = diagnose.DiagnosePackageIssues()
 	case "SERVICE ISSUES":
 		diagnosis = diagnose.DiagnoseServiceIssues()
+	case "PERMISSION ISSUES":
+		diagnosis = diagnose.DiagnosePermissionIssues()
 	case "CUSTOM ISSUE":
 		diagnosis = diagnose.DiagnoseCustomIssue("General system troubleshooting requested")
 	default:
@@ -307,6 +325,46 @@ func (ui *SimpleUI) runDiagnosis(issueType string) {
 		}
 	}
 	
+	ui.showDiagnosisResults(diagnosis)
+}
+
+func (ui *SimpleUI) runFilePermissionAnalysis() {
+	ui.clearScreen()
+	fmt.Println("=====================================")
+	fmt.Println("    FILE PERMISSION ANALYSIS TOOL   ")
+	fmt.Println("=====================================")
+	fmt.Println()
+	
+	// Get file path from user
+	filePath := ui.getInput("Enter file or directory path to analyze: ")
+	if strings.TrimSpace(filePath) == "" {
+		ui.showError("No path provided")
+		return
+	}
+	
+	// Expand tilde to home directory
+	if strings.HasPrefix(filePath, "~/") {
+		homeDir, err := os.UserHomeDir()
+		if err == nil {
+			filePath = filepath.Join(homeDir, filePath[2:])
+		}
+	}
+	
+	fmt.Printf("Analyzing permissions for: %s\n", filePath)
+	fmt.Println()
+	
+	// Show progress
+	ui.showProgress("ANALYZING PERMISSIONS", 0)
+	time.Sleep(300 * time.Millisecond)
+	ui.showProgress("CHECKING OWNERSHIP", 50)
+	time.Sleep(300 * time.Millisecond)
+	ui.showProgress("SECURITY ANALYSIS", 75)
+	time.Sleep(300 * time.Millisecond)
+	ui.showProgress("COMPLETE", 100)
+	fmt.Println()
+	
+	// Run the diagnosis
+	diagnosis := diagnose.DiagnoseFilePermissions(filePath)
 	ui.showDiagnosisResults(diagnosis)
 }
 
@@ -403,6 +461,58 @@ func (ui *SimpleUI) showSystemLogs() {
 	fmt.Println()
 	
 	ui.waitForKey()
+}
+
+func (ui *SimpleUI) showComprehensiveSummary(results checks.Results) {
+	ui.clearScreen()
+	fmt.Println("Generating comprehensive system report...")
+	fmt.Println()
+	
+	// Create summary generator
+	generator := summary.NewGenerator(ui.config)
+	
+	// Show progress
+	ui.showProgress("GATHERING SYSTEM INFO", 25)
+	time.Sleep(300 * time.Millisecond)
+	
+	// Generate summary
+	systemSummary, err := generator.Generate(results)
+	if err != nil {
+		ui.showError(fmt.Sprintf("Failed to generate summary: %v", err))
+		return
+	}
+	
+	ui.showProgress("ANALYZING DATA", 50)
+	time.Sleep(300 * time.Millisecond)
+	
+	ui.showProgress("GENERATING REPORT", 75)
+	time.Sleep(300 * time.Millisecond)
+	
+	ui.showProgress("COMPLETE", 100)
+	fmt.Println()
+	
+	// Display the report
+	report := systemSummary.FormatReport()
+	fmt.Println(report)
+	
+	// Offer to save the report
+	fmt.Println()
+	if ui.askYesNo("Save report to file? (y/n): ") {
+		ui.saveReport(report)
+	}
+}
+
+func (ui *SimpleUI) saveReport(report string) {
+	filename := fmt.Sprintf("debian_doctor_report_%s.txt", 
+		time.Now().Format("20060102_150405"))
+	
+	err := os.WriteFile(filename, []byte(report), 0644)
+	if err != nil {
+		ui.showError(fmt.Sprintf("Failed to save report: %v", err))
+		return
+	}
+	
+	ui.showSuccess(fmt.Sprintf("Report saved to: %s", filename))
 }
 
 func (ui *SimpleUI) showExitMessage() {
