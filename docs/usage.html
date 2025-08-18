@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usage Guide - Debian Doctor</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+    <style>
+        .docs-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
+        .sidebar {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            height: fit-content;
+            position: sticky;
+            top: 80px;
+        }
+        
+        .sidebar h3 {
+            margin-bottom: 1rem;
+            color: #2d3436;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+        }
+        
+        .sidebar li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .sidebar a:hover,
+        .sidebar a.active {
+            color: #0066cc;
+        }
+        
+        .docs-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .docs-content h1 {
+            color: #2d3436;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f8f9fa;
+        }
+        
+        .docs-content h2 {
+            color: #2d3436;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .docs-content h3 {
+            color: #666;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .docs-content pre {
+            background-color: #f4f4f4;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .docs-content code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background-color: #f4f4f4;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+        }
+        
+        .docs-content pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        .note {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .tip {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .command-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .command-table th,
+        .command-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .command-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .command-table code {
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        .output-example {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="logo">🩺</span>
+                <span class="brand-text">Debian Doctor</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="usage.html" class="active">Usage</a></li>
+                <li><a href="https://github.com/sonyccd/debian-doctor" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="docs-container">
+        <aside class="sidebar">
+            <h3>Usage Guide</h3>
+            <ul>
+                <li><a href="#basic-usage">Basic Usage</a></li>
+                <li><a href="#running-modes">Running Modes</a></li>
+                <li><a href="#system-checks">System Checks</a></li>
+                <li><a href="#interactive-mode">Interactive Mode</a></li>
+                <li><a href="#understanding-output">Understanding Output</a></li>
+                <li><a href="#common-issues">Common Issues</a></li>
+                <li><a href="#best-practices">Best Practices</a></li>
+            </ul>
+        </aside>
+
+        <main class="docs-content">
+            <h1>Usage Guide</h1>
+
+            <section id="basic-usage">
+                <h2>Basic Usage</h2>
+                <p>Debian Doctor can be run in several ways depending on your needs and permissions.</p>
+
+                <h3>Quick Start</h3>
+                <pre><code># Basic system check (limited functionality)
+./debian_doctor.sh
+
+# Full system diagnostic (recommended)
+sudo ./debian_doctor.sh</code></pre>
+
+                <h3>Command Options</h3>
+                <table class="command-table">
+                    <thead>
+                        <tr>
+                            <th>Command</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>./debian_doctor.sh</code></td>
+                            <td>Run basic checks with current user permissions</td>
+                        </tr>
+                        <tr>
+                            <td><code>sudo ./debian_doctor.sh</code></td>
+                            <td>Run full diagnostic with root privileges</td>
+                        </tr>
+                        <tr>
+                            <td><code>bash debian_doctor.sh</code></td>
+                            <td>Run explicitly with bash interpreter</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="note">
+                    <strong>Note:</strong> Running with sudo provides access to all system files and services, enabling comprehensive diagnostics.
+                </div>
+            </section>
+
+            <section id="running-modes">
+                <h2>Running Modes</h2>
+
+                <h3>Automatic Mode</h3>
+                <p>By default, Debian Doctor runs in automatic mode, performing all system checks sequentially:</p>
+                <ol>
+                    <li>System Information Collection</li>
+                    <li>Disk Space Analysis</li>
+                    <li>Memory Status Check</li>
+                    <li>Service Health Verification</li>
+                    <li>Network Connectivity Test</li>
+                    <li>Filesystem Integrity Check</li>
+                    <li>System Log Analysis</li>
+                    <li>Package System Verification</li>
+                </ol>
+
+                <h3>Interactive Diagnosis Mode</h3>
+                <p>After automatic checks, you'll be prompted to enter interactive mode for targeted troubleshooting:</p>
+                <div class="output-example">Do you want to run interactive diagnosis? (y/n):</div>
+                
+                <p>Selecting 'y' opens the interactive menu with specific diagnostic options.</p>
+            </section>
+
+            <section id="system-checks">
+                <h2>System Checks Explained</h2>
+
+                <h3>Disk Space Check</h3>
+                <p>Monitors filesystem usage with configurable thresholds:</p>
+                <ul>
+                    <li><strong>OK:</strong> Usage below 85%</li>
+                    <li><strong>Warning:</strong> Usage between 85-95%</li>
+                    <li><strong>Critical:</strong> Usage above 95%</li>
+                </ul>
+                
+                <div class="output-example">✓ Root filesystem (/): 45% used (OK)
+⚠ /home: 87% used (WARNING - Above 85% threshold)
+✗ /var: 96% used (CRITICAL - Above 95% threshold)</div>
+
+                <h3>Memory Status</h3>
+                <p>Analyzes RAM and swap usage:</p>
+                <ul>
+                    <li>Total and available memory</li>
+                    <li>Memory usage percentage</li>
+                    <li>Swap utilization</li>
+                    <li>Memory pressure indicators</li>
+                </ul>
+
+                <h3>Service Health</h3>
+                <p>Checks critical system services:</p>
+                <ul>
+                    <li>systemd-resolved (DNS)</li>
+                    <li>NetworkManager or networking</li>
+                    <li>systemd-timesyncd (Time sync)</li>
+                    <li>SSH daemon (if installed)</li>
+                </ul>
+
+                <h3>Network Connectivity</h3>
+                <p>Verifies network configuration:</p>
+                <ul>
+                    <li>Active network interfaces</li>
+                    <li>Default gateway presence</li>
+                    <li>DNS resolution capability</li>
+                    <li>Internet connectivity</li>
+                </ul>
+
+                <h3>System Logs</h3>
+                <p>Analyzes recent system logs for:</p>
+                <ul>
+                    <li>Critical errors</li>
+                    <li>Service failures</li>
+                    <li>Hardware issues</li>
+                    <li>Security events</li>
+                </ul>
+            </section>
+
+            <section id="interactive-mode">
+                <h2>Interactive Diagnosis Mode</h2>
+                
+                <p>The interactive menu provides targeted troubleshooting options:</p>
+                
+                <div class="output-example">
+══════════════════════════════════════════════════════════════
+                 INTERACTIVE DIAGNOSIS MENU                 
+══════════════════════════════════════════════════════════════
+
+1) Diagnose boot issues
+2) Diagnose network problems  
+3) Diagnose package/apt issues
+4) Diagnose disk issues
+5) Diagnose service failures
+6) Diagnose performance issues
+0) Exit
+
+Enter your choice (0-6):
+                </div>
+
+                <h3>Diagnostic Options</h3>
+                
+                <h4>1. Boot Issues</h4>
+                <ul>
+                    <li>Checks boot loader configuration</li>
+                    <li>Analyzes failed services at startup</li>
+                    <li>Reviews kernel parameters</li>
+                    <li>Suggests fixes for common boot problems</li>
+                </ul>
+
+                <h4>2. Network Problems</h4>
+                <ul>
+                    <li>Tests DNS resolution</li>
+                    <li>Verifies network interfaces</li>
+                    <li>Checks firewall rules</li>
+                    <li>Offers network reset options</li>
+                </ul>
+
+                <h4>3. Package/APT Issues</h4>
+                <ul>
+                    <li>Checks for broken packages</li>
+                    <li>Verifies repository configuration</li>
+                    <li>Cleans package cache</li>
+                    <li>Fixes dependency problems</li>
+                </ul>
+
+                <h4>4. Disk Issues</h4>
+                <ul>
+                    <li>Identifies large files and directories</li>
+                    <li>Checks filesystem errors</li>
+                    <li>Analyzes disk I/O performance</li>
+                    <li>Suggests cleanup operations</li>
+                </ul>
+
+                <h4>5. Service Failures</h4>
+                <ul>
+                    <li>Lists failed services</li>
+                    <li>Provides service logs</li>
+                    <li>Offers service restart options</li>
+                    <li>Suggests configuration fixes</li>
+                </ul>
+
+                <h4>6. Performance Issues</h4>
+                <ul>
+                    <li>Identifies high CPU processes</li>
+                    <li>Checks memory usage patterns</li>
+                    <li>Analyzes system load</li>
+                    <li>Suggests optimization steps</li>
+                </ul>
+
+                <div class="tip">
+                    <strong>Tip:</strong> Each diagnostic option provides specific fixes that can be applied with user confirmation.
+                </div>
+            </section>
+
+            <section id="understanding-output">
+                <h2>Understanding Output</h2>
+
+                <h3>Color Coding</h3>
+                <table class="command-table">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Color</th>
+                            <th>Meaning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>✓</td>
+                            <td>Green</td>
+                            <td>Check passed successfully</td>
+                        </tr>
+                        <tr>
+                            <td>⚠</td>
+                            <td>Yellow</td>
+                            <td>Warning - attention needed</td>
+                        </tr>
+                        <tr>
+                            <td>✗</td>
+                            <td>Red</td>
+                            <td>Error or critical issue</td>
+                        </tr>
+                        <tr>
+                            <td>ℹ</td>
+                            <td>Blue</td>
+                            <td>Information message</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Log Files</h3>
+                <p>Debian Doctor creates log files for detailed analysis:</p>
+                <pre><code># Log file location (user-specific)
+/tmp/debian_doctor_$(id -u).log
+
+# View the log file
+cat /tmp/debian_doctor_$(id -u).log
+
+# Follow log in real-time during execution
+tail -f /tmp/debian_doctor_$(id -u).log</code></pre>
+
+                <h3>Summary Report</h3>
+                <p>At the end of execution, a summary is provided:</p>
+                <div class="output-example">
+═══════════════════════════════════════════════════════════════
+                         SUMMARY                          
+═══════════════════════════════════════════════════════════════
+
+Issues found: 3
+Warnings: 2
+
+✗ Critical: Disk space on /var above 95%
+⚠ Warning: Memory usage high (89%)
+✗ Service 'apache2' is not running
+⚠ Warning: 15 packages need updating
+✗ Network: DNS resolution failing
+
+Log file: /tmp/debian_doctor_1000.log
+                </div>
+            </section>
+
+            <section id="common-issues">
+                <h2>Fixing Common Issues</h2>
+
+                <h3>Disk Space Problems</h3>
+                <pre><code># Clean package cache
+sudo apt-get clean
+sudo apt-get autoclean
+
+# Remove old kernels
+sudo apt-get autoremove --purge
+
+# Find large files
+find / -type f -size +100M 2>/dev/null</code></pre>
+
+                <h3>Package System Issues</h3>
+                <pre><code># Fix broken packages
+sudo apt-get update --fix-missing
+sudo apt-get install -f
+
+# Reconfigure packages
+sudo dpkg --configure -a
+
+# Clean and update
+sudo apt-get clean
+sudo apt-get update</code></pre>
+
+                <h3>Service Failures</h3>
+                <pre><code># Check service status
+systemctl status service-name
+
+# Restart service
+sudo systemctl restart service-name
+
+# View service logs
+journalctl -u service-name -n 50</code></pre>
+
+                <h3>Network Problems</h3>
+                <pre><code># Restart network manager
+sudo systemctl restart NetworkManager
+
+# Reset network configuration
+sudo netplan apply  # For Ubuntu 18.04+
+
+# Flush DNS cache
+sudo systemd-resolve --flush-caches</code></pre>
+            </section>
+
+            <section id="best-practices">
+                <h2>Best Practices</h2>
+
+                <h3>Regular Maintenance</h3>
+                <ul>
+                    <li>Run Debian Doctor weekly for proactive monitoring</li>
+                    <li>Address warnings before they become critical</li>
+                    <li>Keep system packages updated</li>
+                    <li>Monitor disk space trends</li>
+                    <li>Review log files for recurring issues</li>
+                </ul>
+
+                <h3>Before System Updates</h3>
+                <ol>
+                    <li>Run Debian Doctor to check system health</li>
+                    <li>Fix any critical issues found</li>
+                    <li>Ensure adequate disk space (at least 2GB free)</li>
+                    <li>Verify all services are running properly</li>
+                    <li>Create system backup if needed</li>
+                </ol>
+
+                <h3>Troubleshooting Workflow</h3>
+                <ol>
+                    <li>Run automatic checks first</li>
+                    <li>Note all warnings and errors</li>
+                    <li>Use interactive mode for specific issues</li>
+                    <li>Apply suggested fixes one at a time</li>
+                    <li>Re-run checks to verify fixes</li>
+                    <li>Check log file for detailed information</li>
+                </ol>
+
+                <div class="warning">
+                    <strong>Important:</strong> Always backup critical data before applying system fixes. Some operations may require system restart.
+                </div>
+
+                <h3>Security Considerations</h3>
+                <ul>
+                    <li>Run with sudo only when necessary</li>
+                    <li>Review fix commands before confirming</li>
+                    <li>Keep Debian Doctor updated</li>
+                    <li>Don't share log files containing sensitive data</li>
+                    <li>Verify script integrity after updates</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Debian Doctor. Licensed under MIT License.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
