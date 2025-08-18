@@ -122,9 +122,9 @@ jobs:
       - name: Build Debian package
         if: matrix.build_deb == true
         run: |
-          # Install dpkg-dev for package building
+          # Install dpkg-dev and build-essential for package building
           sudo apt-get update
-          sudo apt-get install -y dpkg-dev
+          sudo apt-get install -y dpkg-dev build-essential
           
           # Copy binary for packaging
           cp debian-doctor-${{ matrix.suffix }} debian-doctor
