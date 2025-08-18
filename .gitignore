@@ -91,10 +91,18 @@ __pycache__/
 
 # Debian package build files
 *.deb
+*.deb.sha256
 debian/files
 debian/*.log
 debian/*.substvars
+debian/*.debhelper
+debian/*.debhelper.log
 debian/debian-doctor/
+debian/tmp/
+*.buildinfo
+*.changes
+*.dsc
+*.orig.tar.gz
 
 # Snap package files
 *.snap

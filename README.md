@@ -30,15 +30,26 @@ A comprehensive system diagnostic and troubleshooting tool for Debian-based syst
 
 ## Installation
 
-### Quick Install (Latest Release)
+### Debian Package (Recommended)
+
+```bash
+# Download and install latest .deb package
+wget https://github.com/sonyccd/debian-doctor/releases/latest/download/debian-doctor_1.0.0-1_amd64.deb
+sudo dpkg -i debian-doctor_1.0.0-1_amd64.deb
+
+# Or install dependencies if needed
+sudo apt-get install -f
+```
+
+### Quick Install (Binary Release)
 
 ```bash
 # Linux AMD64
-wget -O- https://github.com/yourusername/debian-doctor/releases/latest/download/debian-doctor-linux-amd64.tar.gz | tar xz
+wget -O- https://github.com/sonyccd/debian-doctor/releases/latest/download/debian-doctor-linux-amd64.tar.gz | tar xz
 sudo mv debian-doctor-linux-amd64 /usr/local/bin/debian-doctor
 
 # Linux ARM64
-wget -O- https://github.com/yourusername/debian-doctor/releases/latest/download/debian-doctor-linux-arm64.tar.gz | tar xz
+wget -O- https://github.com/sonyccd/debian-doctor/releases/latest/download/debian-doctor-linux-arm64.tar.gz | tar xz
 sudo mv debian-doctor-linux-arm64 /usr/local/bin/debian-doctor
 ```
 
@@ -48,7 +59,7 @@ Requirements:
 - Go 1.21 or higher
 
 ```bash
-git clone https://github.com/yourusername/debian-doctor.git
+git clone https://github.com/sonyccd/debian-doctor.git
 cd debian-doctor
 go build -o debian-doctor .
 sudo mv debian-doctor /usr/local/bin/
@@ -68,22 +79,30 @@ sudo debian-doctor
 ### Command Line Mode
 
 ```bash
-# Diagnose a specific issue
-debian-doctor --issue "network connection drops"
+# Diagnose specific issue types
+debian-doctor --diagnose disk        # Disk space issues
+debian-doctor --diagnose network     # Network problems
+debian-doctor --diagnose services    # Service issues
+debian-doctor --diagnose packages    # Package management
+debian-doctor --diagnose permissions # File permissions
 
-# Show help
+# Analyze file/directory permissions
+debian-doctor --check /path/to/file
+
+# Generate system summary
+debian-doctor --summary
+
+# Show help and version
 debian-doctor --help
-
-# Enable verbose output
-debian-doctor --verbose
+debian-doctor --version
 ```
 
 ### Interactive Menu Options
 
-1. **Run System Check** - Execute full diagnostic scan
-2. **Interactive Diagnosis** - Diagnose specific issues
-3. **View System Logs** - Display diagnostic history
-4. **Exit** - Terminate session
+1. **>>> RUN SYSTEM CHECK** - Execute full diagnostic scan
+2. **>>> INTERACTIVE DIAGNOSIS** - Diagnose specific issues
+3. **>>> VIEW SYSTEM LOGS** - Display diagnostic history  
+4. **>>> EXIT** - Terminate session
 
 ### Running with Root Privileges (Recommended)
 
@@ -120,7 +139,7 @@ debian-doctor/
 
 1. **Checks Package**: Implements the `Check` interface for system diagnostics
 2. **Diagnose Package**: Provides targeted problem analysis and fix suggestions
-3. **TUI Package**: Bubble Tea based terminal interface with multiple views
+3. **TUI Package**: Simple text-based terminal interface for universal compatibility
 4. **Config Package**: Application configuration and user preferences
 5. **Logger Package**: Structured logging with file and console output
 
@@ -158,7 +177,7 @@ type Check interface {
 ### Adding New Diagnosis Types
 
 1. Create diagnosis function in `internal/diagnose/`
-2. Add case to `runDiagnosis()` in `internal/tui/model.go`
+2. Add case to `RunDiagnosis()` in `internal/tui/simple.go`
 3. Add menu item to diagnosis menu
 
 ## Features Implemented
