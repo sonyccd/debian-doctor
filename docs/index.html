@@ -11,7 +11,7 @@
     <nav class="navbar">
         <div class="container">
             <div class="nav-brand">
-                <span class="logo">🩺</span>
+                <span class="logo">💊</span>
                 <span class="brand-text">Debian Doctor</span>
             </div>
             <ul class="nav-menu">
@@ -25,11 +25,13 @@
 
     <header class="hero">
         <div class="container">
-            <h1 class="hero-title">🩺 Debian Doctor</h1>
-            <p class="hero-subtitle">Comprehensive system diagnostic and troubleshooting tool for Debian-based systems</p>
+            <h1 class="hero-title">💊 Debian Doctor</h1>
+            <p class="hero-subtitle">Comprehensive system diagnostic and troubleshooting tool for Debian Linux and derivatives (Ubuntu, Mint, Pop!_OS, etc.)</p>
             <div class="hero-buttons">
-                <a href="https://github.com/sonyccd/debian-doctor/archive/refs/heads/main.zip" class="btn btn-primary">Download</a>
-                <a href="installation.html" class="btn btn-secondary">Get Started</a>
+                <a href="https://snapcraft.io/debian-doctor">
+                    <img alt="Get it from the Snap Store" src="https://snapcraft.io/en/light/install.svg" style="height: 48px;" />
+                </a>
+                <a href="installation.html" class="btn btn-secondary">Other Install Methods</a>
             </div>
         </div>
     </header>
@@ -114,19 +116,19 @@
             <div class="install-steps">
                 <div class="step">
                     <div class="step-number">1</div>
-                    <h3>Clone the Repository</h3>
-                    <pre><code>git clone https://github.com/sonyccd/debian-doctor.git
-cd debian-doctor</code></pre>
+                    <h3>Install from Snap Store</h3>
+                    <pre><code>sudo snap install debian-doctor</code></pre>
                 </div>
                 <div class="step">
                     <div class="step-number">2</div>
-                    <h3>Make Executable</h3>
-                    <pre><code>chmod +x debian_doctor.sh</code></pre>
+                    <h3>Grant Permissions</h3>
+                    <pre><code>sudo snap connect debian-doctor:system-observe
+sudo snap connect debian-doctor:hardware-observe</code></pre>
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
                     <h3>Run Diagnostic</h3>
-                    <pre><code>sudo ./debian_doctor.sh</code></pre>
+                    <pre><code>debian-doctor</code></pre>
                 </div>
             </div>
         </div>
@@ -161,7 +163,7 @@ cd debian-doctor</code></pre>
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>Debian Doctor</h3>
-                    <p>Open-source system diagnostic tool for Debian-based Linux distributions</p>
+                    <p>Open-source system diagnostic tool for Debian Linux and Debian-based distributions</p>
                 </div>
                 <div class="footer-section">
                     <h3>Links</h3>
@@ -181,7 +183,7 @@ cd debian-doctor</code></pre>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Debian Doctor. Licensed under MIT License.</p>
+                <p>&copy; 2025 Debian Doctor. Made with ❤️  in Chapel Hill, North Carolina by Brad Bazemore. Licensed under MIT License.</p>
             </div>
         </div>
     </footer>
