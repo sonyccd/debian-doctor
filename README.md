@@ -1,352 +1,279 @@
-# Debian Doctor 🩺
+# Debian Doctor
 
-[![CI Status](https://github.com/sonyccd/debian-doctor/actions/workflows/test.yml/badge.svg)](https://github.com/sonyccd/debian-doctor/actions/workflows/test.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Shell](https://img.shields.io/badge/Shell-Bash-blue.svg)](https://www.gnu.org/software/bash/)
-[![Platform](https://img.shields.io/badge/Platform-Debian%20%7C%20Ubuntu-orange.svg)](https://www.debian.org/)
+A comprehensive system diagnostic and troubleshooting tool for Debian-based systems with a modern Terminal User Interface (TUI) built using Bubble Tea.
 
-A comprehensive offline system diagnostic and troubleshooting tool for Debian-based systems. Debian Doctor helps you identify and resolve common system issues without requiring internet connectivity.
+> **Note**: This is a complete rewrite of the original bash script in Go, providing enhanced performance, better error handling, and a modern interactive interface.
 
-## 🚀 Features
+## Features
 
-### Automatic System Analysis
-- **System Information** - OS version, kernel, architecture, uptime
-- **Disk Space Analysis** - Usage monitoring with critical/warning thresholds
-- **Memory Analysis** - RAM and swap usage with pressure detection
-- **Service Status** - Critical system services health check
-- **Network Configuration** - Interface status, IP addresses, routing, DNS
-- **Filesystem Health** - Error detection and mount status
-- **System Logs** - Recent error analysis from systemd journal
-- **Package System** - Broken packages and lock detection
+### System Checks
+- **System Information**: OS version, kernel, hostname, uptime
+- **Disk Space Analysis**: Usage monitoring with configurable thresholds
+- **Memory Usage**: RAM and swap monitoring
+- **Network Configuration**: Interface status, IP addresses, DNS
+- **System Services**: Critical service health monitoring (requires root)
 
-### Interactive Problem Diagnosis
-When automatic checks don't identify issues, Debian Doctor provides guided troubleshooting for:
+### Interactive Diagnosis
+- **Boot Issues**: System startup problems
+- **Performance Issues**: CPU, memory, and load analysis
+- **Network Issues**: Connectivity troubleshooting
+- **Disk Issues**: Storage problems and cleanup suggestions
+- **Service Issues**: Service management problems
+- **Display Issues**: Graphics and X11 problems
+- **Package Issues**: APT package system problems
+- **Permission Issues**: File access problems
 
-1. **Boot Issues** - System startup problems
-2. **Performance Problems** - Slow system response
-3. **Network Connectivity** - Connection and DNS issues
-4. **Disk/Storage Issues** - Space and I/O problems
-5. **Service Problems** - Application startup failures
-6. **Display/Graphics Issues** - GUI and driver problems
-7. **Package Management** - APT and dpkg issues
-8. **Permission/Access Issues** - File and directory access
-9. **Custom Diagnosis** - General troubleshooting guidance
+### Modern TUI Features
+- Beautiful terminal interface with colors and animations
+- Progress bars for system checks
+- Interactive menus with keyboard navigation
+- Real-time status updates
+- Comprehensive logging
 
-### Smart Fix Suggestions
-- Identifies root causes automatically
-- Provides specific fix commands with explanations
-- Asks for user confirmation before applying changes
-- Offers manual alternatives if automated fixes fail
-- Includes safety checks and validation
+## Installation
 
-## 📋 Requirements
+### Prerequisites
+- Go 1.21 or later
+- Debian-based Linux system
+- Terminal with color support
 
-- **Operating System**: Debian 9+ or Ubuntu 18.04+
-- **Shell**: Bash 4.0+
-- **Permissions**: Regular user (limited functionality) or root (full features)
-- **Dependencies**: Standard system utilities (automatically available)
+### Build from Source
 
-### Required Tools (usually pre-installed)
 ```bash
-# Core utilities
-df, free, ps, systemctl, journalctl, ip, mount, dpkg
-
-# Optional but recommended
-bc, nslookup, lspci
+git clone <repository>
+cd go-debian-doctor
+go mod tidy
+go build -o debian-doctor
 ```
 
-## 🔧 Installation
+### Install System-wide (Optional)
 
-### Quick Install
 ```bash
-# Download the script
-wget https://raw.githubusercontent.com/sonyccd/debian-doctor/main/debian_doctor.sh
-
-# Make it executable
-chmod +x debian_doctor.sh
-
-# Run it
-./debian_doctor.sh
-```
-
-### System-wide Installation
-```bash
-# Install system-wide
-sudo cp debian_doctor.sh /usr/local/bin/debian-doctor
+sudo cp debian-doctor /usr/local/bin/
 sudo chmod +x /usr/local/bin/debian-doctor
-
-# Run from anywhere
-debian-doctor
 ```
 
-### Git Clone
+## Usage
+
+### Interactive Mode (Default)
 ```bash
-git clone https://github.com/sonyccd/debian-doctor.git
-cd debian-doctor
-chmod +x debian_doctor.sh
-./debian_doctor.sh
+./debian-doctor
 ```
 
-## 🎯 Usage
-
-### Basic Usage
+### Command Line Options
 ```bash
-# Run with current user privileges
-./debian_doctor.sh
-
-# Run with full system access (recommended)
-sudo ./debian_doctor.sh
+./debian-doctor --help                    # Show help
+./debian-doctor --non-interactive         # Run without TUI
+./debian-doctor --verbose                 # Enable verbose output
 ```
 
-### Example Output
-```
-================================
-    DEBIAN DOCTOR v1.0
-    System Diagnostic Tool
-================================
-
-ℹ Running as root - full system access available
-
-[+] System Information
-----------------------------------------
-✓ OS: Debian GNU/Linux 12 (bookworm)
-✓ Version: 12 (bookworm)
-✓ Kernel: 6.1.0-13-amd64
-✓ Architecture: x86_64
-✓ Hostname: myserver
-✓ Uptime: up 2 days, 14 hours, 23 minutes
-
-[+] Disk Space Analysis
-----------------------------------------
-✓ Disk usage OK on /: 45%
-⚠ WARNING: Disk usage high on /var: 87%
-✓ Disk usage OK on /home: 23%
-
-[+] Memory Analysis
-----------------------------------------
-✓ Total Memory: 7956 MB
-✓ Available Memory: 5234 MB
-✓ Memory Usage: 34%
-✓ Swap Usage: 2%
-```
-
-### Interactive Mode
-After the automatic scan, you can enter interactive mode to diagnose specific issues:
-
-```
-Please select the issue you're experiencing:
-1) System won't boot properly
-2) System is running very slowly
-3) Network connectivity issues
-4) Disk/storage problems
-5) Service/application won't start
-6) Display/graphics issues
-7) Package management problems
-8) Permission/access issues
-9) Other/Custom diagnosis
-0) Exit
-
-Enter your choice (0-9): 2
-```
-
-### Fix Application Example
-```
-SUGGESTED FIX: Restart networking service
-Command: systemctl restart networking
-
-Do you want to run this fix? (y/N): y
-Executing: systemctl restart networking
-✓ Fix applied successfully
-```
-
-## 📊 Understanding Output
-
-### Status Indicators
-- **✓ Green**: System is healthy
-- **⚠ Yellow**: Warning - attention recommended
-- **✗ Red**: Error - immediate action required
-- **ℹ Blue**: Information - no action needed
-
-### Severity Levels
-
-#### Critical Issues (Red)
-- Disk usage > 95%
-- Memory usage > 90%
-- Failed critical services
-- Filesystem errors
-- Root filesystem read-only
-
-#### Warnings (Yellow)
-- Disk usage > 85%
-- Memory usage > 80%
-- High swap usage
-- Interface down
-- No DNS servers
-
-#### Information (Blue)
-- System specifications
-- Normal status messages
-- Helpful tips and suggestions
-
-## 🛠️ Advanced Usage
-
-### Running Specific Checks
-While the script doesn't support individual check selection, you can extract functions for custom use:
-
+### Running with Root Privileges (Recommended)
 ```bash
-# Source the script to use individual functions
-source debian_doctor.sh
-
-# Run specific checks
-check_disk_space
-check_memory
-check_services
+sudo ./debian-doctor
 ```
 
-### Customizing Thresholds
-Edit the script to modify warning/error thresholds:
+Running as root enables additional checks:
+- System service status
+- System logs analysis
+- Package system integrity
+- Advanced network diagnostics
 
-```bash
-# Disk space thresholds
-if [[ $usage -gt 95 ]]; then    # Critical threshold
-if [[ $usage -gt 85 ]]; then    # Warning threshold
+## Navigation
 
-# Memory thresholds  
-if [[ $mem_usage_percent -gt 90 ]]; then  # Critical
-if [[ $mem_usage_percent -gt 80 ]]; then  # Warning
+### Main Menu
+- `↑/↓` - Navigate menu options
+- `Enter` - Select option
+- `q` or `Ctrl+C` - Quit
+
+### During System Checks
+- System checks run automatically with progress indication
+- Press `Ctrl+C` to cancel
+
+### Results View
+- `↑/↓` - Scroll through results
+- `Esc` - Return to main menu
+
+### Interactive Diagnosis
+- `↑/↓` - Navigate diagnosis options
+- `Enter` - Select diagnosis type
+- `f` - Apply suggested fix (when available)
+- `Esc` - Go back
+
+### Fix Application
+- `y` - Confirm fix application
+- `n` - Cancel fix
+- `Esc` - Go back
+
+## Architecture
+
+### Project Structure
+```
+debian-doctor/
+├── cmd/                    # Command line interface
+├── internal/
+│   ├── checks/            # System check implementations
+│   ├── diagnose/          # Problem diagnosis logic
+│   ├── tui/              # Terminal user interface
+│   └── utils/            # Utility functions
+├── pkg/
+│   ├── config/           # Configuration management
+│   └── logger/           # Logging functionality
+├── scripts/               # Development and build scripts
+├── main.go               # Application entry point
+├── Makefile              # Build automation
+└── CLAUDE.md             # Project documentation for AI assistants
 ```
 
-### Log Analysis
-All activities are logged to `/tmp/debian_doctor.log`:
+### Key Components
 
-```bash
-# View the log
-cat /tmp/debian_doctor.log
+1. **Checks Package**: Implements the `Check` interface for system diagnostics
+2. **Diagnose Package**: Provides targeted problem analysis and fix suggestions
+3. **TUI Package**: Bubble Tea based terminal interface with multiple views
+4. **Config Package**: Application configuration and user preferences
+5. **Logger Package**: Structured logging with file and console output
 
-# Monitor in real-time
-tail -f /tmp/debian_doctor.log
-```
-
-## 🔍 Troubleshooting Guide
-
-### Common Issues
-
-#### "Permission denied" errors
-**Solution**: Run with sudo for full functionality
-```bash
-sudo ./debian_doctor.sh
-```
-
-#### Script won't execute
-**Solution**: Check permissions and shebang
-```bash
-chmod +x debian_doctor.sh
-file debian_doctor.sh  # Should show "Bash script"
-```
-
-#### Missing dependencies
-**Solution**: Install required packages
-```bash
-sudo apt update
-sudo apt install bc net-tools iproute2
-```
-
-#### False positives
-Some warnings may be expected in your environment:
-- Container environments may show unusual filesystem layouts
-- Virtual machines may report different hardware information
-- Test systems may have intentionally high resource usage
-
-## 🧪 Testing
+## Development
 
 ### Running Tests
 ```bash
-# Run the included test suite
-./debian_doctor_tests.sh
-
-# Check syntax only
-bash -n debian_doctor.sh
+go test ./...                             # Run all tests
+go test ./internal/checks                 # Run specific package tests
+go test -v ./...                         # Verbose test output
 ```
 
-### Test Coverage
-The test suite covers:
-- ✅ Core functionality
-- ✅ Error conditions
-- ✅ Edge cases
-- ✅ Performance benchmarks
-- ✅ Cross-platform compatibility
-
-### CI/CD
-This project uses GitHub Actions for automated testing:
-- Runs on multiple Ubuntu versions
-- Tests with different shell interpreters  
-- Includes security scanning
-- Validates performance benchmarks
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md).
-
-### Development Setup
+### Code Quality
 ```bash
-git clone https://github.com/sonyccd/debian-doctor.git
-cd debian-doctor
-
-# Run tests
-./debian_doctor_tests.sh
-
-# Check code quality
-shellcheck debian_doctor.sh
+go fmt ./...                              # Format code
+go vet ./...                              # Static analysis
+golint ./...                              # Linting (if installed)
 ```
 
-### Reporting Issues
-When reporting issues, please include:
-- Operating system and version
-- Error messages (if any)
-- Output from `./debian_doctor.sh`
-- Steps to reproduce
+### Adding New Checks
 
-### Feature Requests
-We're always looking to improve! Current roadmap includes:
-- Configuration file support
-- Plugin system for custom checks
-- JSON output format
-- Web dashboard interface
-- Integration with monitoring systems
+1. Implement the `Check` interface in `internal/checks/`:
+```go
+type Check interface {
+    Name() string
+    Run() CheckResult
+    RequiresRoot() bool
+}
+```
 
-## 📄 License
+2. Add the check to `GetAllChecks()` in `internal/checks/checks.go`
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+3. Create corresponding tests in `*_test.go` files
 
-## 🙏 Acknowledgments
+### Adding New Diagnosis Types
 
-- Inspired by similar diagnostic tools in other distributions
-- Built with standard POSIX utilities for maximum compatibility
-- Community feedback and contributions
-- Debian and Ubuntu communities for excellent documentation
+1. Create diagnosis function in `internal/diagnose/`
+2. Add case to `runDiagnosis()` in `internal/tui/model.go`
+3. Add menu item to diagnosis menu
 
-## 📚 Additional Resources
+## Comparison with Bash Version
 
-### Documentation
-- [Debian System Administration](https://www.debian.org/doc/manuals/debian-reference/)
-- [Ubuntu Server Guide](https://ubuntu.com/server/docs)
-- [Systemd Documentation](https://www.freedesktop.org/wiki/Software/systemd/)
+### Advantages of Go Version
+- **Better Performance**: Compiled binary vs interpreted script
+- **Modern Interface**: Rich TUI with colors, progress bars, and animations
+- **Type Safety**: Go's type system prevents runtime errors
+- **Better Testing**: Comprehensive test suite with mocks
+- **Cross-compilation**: Can build for different architectures
+- **Structured Logging**: Better log management and formatting
+- **Memory Safety**: No shell injection vulnerabilities
+- **Dependency Management**: Go modules for reliable builds
 
-### Related Tools
-- `htop` - Interactive process viewer
-- `iotop` - I/O monitoring
-- `netstat` - Network connections
-- `lsof` - Open files and processes
-- `dmesg` - Kernel messages
+### Feature Parity
+- ✅ All system checks from bash version
+- ✅ Interactive diagnosis with fix suggestions
+- ✅ Permission-aware operations
+- ✅ Comprehensive logging
+- ✅ Root/non-root operation modes
+- ✅ Error handling and recovery
 
-### Support
-- [GitHub Issues](https://github.com/sonyccd/debian-doctor/issues)
-- [Discussions](https://github.com/sonyccd/debian-doctor/discussions)
-- [Debian Forums](https://forums.debian.net/)
-- [Ubuntu Forums](https://ubuntuforums.org/)
+### Additional Features
+- Progress indicators during checks
+- Real-time UI updates
+- Better error reporting
+- Structured configuration
+- Improved navigation
+- Professional appearance
 
----
+## Current Capabilities vs Original Bash Script
 
-**Debian Doctor** - Because every system needs a checkup! 🩺
+### ✅ **Fully Implemented**
+- All system checks (disk, memory, network, services, system info)
+- Interactive diagnosis menu system
+- Modern TUI with animations and visual feedback
+- Structured logging and configuration
+- Comprehensive test suite
+- Cross-platform builds
 
-Made with ❤️ for the Debian community
+### 🚧 **Partially Implemented**
+- **Fix Suggestions**: Currently shows fixes but doesn't execute them
+- **Package Management**: Basic checks implemented, advanced APT diagnostics pending
+
+### ❌ **Not Yet Implemented** (from original bash script)
+- **Fix Execution**: `offer_fix()` functionality - actually running suggested commands
+- **Custom Diagnosis**: Free-form issue description with general troubleshooting steps
+- **Advanced Package Analysis**: Comprehensive APT package system checks
+- **Service-Specific Diagnosis**: User input for specific service troubleshooting  
+- **File Permission Analysis**: Detailed permission diagnosis for user-specified paths
+- **Comprehensive Summary**: End-of-scan summary report generation
+- **System Log Analysis**: Parsing systemd journal and log files for errors
+- **Filesystem Integrity**: Read-only filesystem detection and remount suggestions
+
+### 🎯 **Roadmap**
+1. **Fix Execution System**: Implement safe command execution with confirmation
+2. **Advanced Diagnostics**: Add custom diagnosis and detailed service analysis
+3. **Log Analysis**: Implement comprehensive system log parsing
+4. **Package Management**: Enhanced APT system checks and fixes
+5. **Filesystem Checks**: Advanced filesystem integrity and permissions analysis
+
+## Troubleshooting
+
+### Build Issues
+```bash
+# Clean module cache
+go clean -modcache
+go mod download
+
+# Verify Go version
+go version
+
+# Check dependencies
+go mod verify
+```
+
+### Runtime Issues
+```bash
+# Check permissions
+ls -la debian-doctor
+
+# Verify terminal compatibility
+echo $TERM
+
+# Check system requirements
+uname -a
+```
+
+### Common Problems
+
+1. **"Permission denied" errors**: Run with `sudo` for full functionality
+2. **Terminal display issues**: Ensure terminal supports colors and UTF-8
+3. **Missing system tools**: Install required system utilities (systemctl, etc.)
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Run the test suite
+6. Submit a pull request
+
+## License
+
+This project maintains the same license as the original Debian Doctor bash script.
+
+## Support
+
+For issues and feature requests, please use the project's issue tracker.
