@@ -30,7 +30,20 @@ A comprehensive system diagnostic and troubleshooting tool for Debian-based syst
 
 ## Installation
 
-### Debian Package (Recommended)
+### Snap Package (Recommended)
+
+```bash
+# Install from Snap Store
+sudo snap install debian-doctor
+
+# For development/edge version
+sudo snap install debian-doctor --edge
+
+# Run the application
+debian-doctor
+```
+
+### Debian Package
 
 ```bash
 # Download and install latest .deb package
