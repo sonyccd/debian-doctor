@@ -46,39 +46,37 @@ func DiagnoseDiskIssues() Diagnosis {
 		}
 	}
 
-	if len(fullFilesystems) > 0 {
-		// Get common fixes for disk space issues
-		commonFixes := fixes.GetCommonFixes()
-		
-		if cleanFix, exists := commonFixes["clean_package_cache"]; exists {
-			diagnosis.Fixes = append(diagnosis.Fixes, cleanFix)
-		}
-		
-		if removeFix, exists := commonFixes["remove_orphaned_packages"]; exists {
-			diagnosis.Fixes = append(diagnosis.Fixes, removeFix)
-		}
-		
-		// Add custom fixes
-		diagnosis.Fixes = append(diagnosis.Fixes, &fixes.Fix{
-			ID:          "find_large_files",
-			Title:       "Find Large Files",
-			Description: "Find files larger than 100MB to identify disk space usage",
-			Commands:    []string{"find / -type f -size +100M 2>/dev/null | head -20"},
-			RequiresRoot: false,
-			Reversible:  false,
-			RiskLevel:   fixes.RiskLow,
-		})
-		
-		diagnosis.Fixes = append(diagnosis.Fixes, &fixes.Fix{
-			ID:          "clear_old_logs",
-			Title:       "Clear Old System Logs",
-			Description: "Remove system logs older than 7 days to free space",
-			Commands:    []string{"journalctl --vacuum-time=7d"},
-			RequiresRoot: true,
-			Reversible:  false,
-			RiskLevel:   fixes.RiskLow,
-		})
+	// Always provide cleanup fixes for disk maintenance
+	commonFixes := fixes.GetCommonFixes()
+	
+	if cleanFix, exists := commonFixes["clean_package_cache"]; exists {
+		diagnosis.Fixes = append(diagnosis.Fixes, cleanFix)
 	}
+	
+	if removeFix, exists := commonFixes["remove_orphaned_packages"]; exists {
+		diagnosis.Fixes = append(diagnosis.Fixes, removeFix)
+	}
+	
+	// Add custom fixes for disk analysis and cleanup
+	diagnosis.Fixes = append(diagnosis.Fixes, &fixes.Fix{
+		ID:          "find_large_files",
+		Title:       "Find Large Files",
+		Description: "Find files larger than 100MB to identify disk space usage",
+		Commands:    []string{"find / -type f -size +100M 2>/dev/null | head -20"},
+		RequiresRoot: false,
+		Reversible:  false,
+		RiskLevel:   fixes.RiskLow,
+	})
+	
+	diagnosis.Fixes = append(diagnosis.Fixes, &fixes.Fix{
+		ID:          "clear_old_logs",
+		Title:       "Clear Old System Logs",
+		Description: "Remove system logs older than 7 days to free space",
+		Commands:    []string{"journalctl --vacuum-time=7d"},
+		RequiresRoot: true,
+		Reversible:  false,
+		RiskLevel:   fixes.RiskLow,
+	})
 
 	// Check for I/O errors
 	if output, err := exec.Command("dmesg").Output(); err == nil {

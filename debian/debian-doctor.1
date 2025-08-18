@@ -1,0 +1,160 @@
+.TH DEBIAN-DOCTOR 1 "August 2025" "debian-doctor 1.0.0" "System Administration"
+.SH NAME
+debian-doctor \- comprehensive system diagnostic and troubleshooting tool
+.SH SYNOPSIS
+.B debian-doctor
+.RI [ options ]
+.br
+.B debian-doctor
+.B \-\-help
+.br
+.B debian-doctor
+.B \-\-version
+.br
+.B debian-doctor
+.B \-\-diagnose
+.I issue-type
+.SH DESCRIPTION
+.B debian-doctor
+is a comprehensive system diagnostic and troubleshooting tool for Debian-based systems. It performs automatic system health checks and provides interactive problem diagnosis with fix suggestions.
+
+The tool analyzes various aspects of system health including disk usage, memory consumption, network connectivity, service status, filesystem integrity, package management, and file permissions. It can operate in both interactive mode for guided troubleshooting and command-line mode for specific issue diagnosis.
+
+When run with root privileges, additional diagnostic capabilities are available for comprehensive system analysis.
+.SH OPTIONS
+.TP
+.B \-h, \-\-help
+Display help information and exit
+.TP
+.B \-v, \-\-version
+Display version information and exit
+.TP
+.B \-\-diagnose \fIISSUE-TYPE\fR
+Diagnose a specific issue type. Available issue types:
+.RS
+.IP \(bu 4
+.B disk
+\- Disk space and filesystem issues
+.IP \(bu 4
+.B memory
+\- Memory usage and swap issues
+.IP \(bu 4
+.B network
+\- Network connectivity problems
+.IP \(bu 4
+.B services
+\- System service health
+.IP \(bu 4
+.B packages
+\- Package management issues
+.IP \(bu 4
+.B logs
+\- System log analysis
+.IP \(bu 4
+.B permissions
+\- File permission analysis
+.IP \(bu 4
+.B performance
+\- System performance issues
+.RE
+.TP
+.B \-\-check \fIPATH\fR
+Analyze file or directory permissions for the specified path
+.TP
+.B \-\-summary
+Generate comprehensive system summary report
+.TP
+.B \-\-no-color
+Disable colored output
+.TP
+.B \-\-quiet
+Reduce output verbosity
+.SH EXAMPLES
+.TP
+Run interactive system diagnosis:
+.B debian-doctor
+.TP
+Diagnose disk space issues:
+.B debian-doctor \-\-diagnose disk
+.TP
+Analyze file permissions:
+.B debian-doctor \-\-check /path/to/file
+.TP
+Generate system summary:
+.B debian-doctor \-\-summary
+.TP
+Run with root privileges for full diagnostics:
+.B sudo debian-doctor
+.SH EXIT STATUS
+.TP
+.B 0
+Success - no critical issues found
+.TP
+.B 1
+Warnings found - minor issues detected
+.TP
+.B 2
+Errors found - critical issues detected
+.TP
+.B 3
+Fatal error - unable to complete diagnosis
+.SH FILES
+.TP
+.I /tmp/debian-doctor-*.log
+Diagnostic log files (user-specific)
+.TP
+.I ~/.config/debian-doctor/
+User configuration directory (future use)
+.TP
+.I /etc/debian-doctor/
+System-wide configuration directory (future use)
+.SH DIAGNOSTICS
+The tool performs the following system checks:
+.IP \(bu 4
+System information and hardware details
+.IP \(bu 4
+Disk space usage and filesystem health
+.IP \(bu 4
+Memory and swap utilization
+.IP \(bu 4
+Network interface configuration and connectivity
+.IP \(bu 4
+Critical system service status
+.IP \(bu 4
+Package manager integrity
+.IP \(bu 4
+System log error analysis
+.IP \(bu 4
+File and directory permission security
+.IP \(bu 4
+Performance metrics and resource usage
+.SH SECURITY
+When analyzing file permissions, debian-doctor checks for common security issues including:
+.IP \(bu 4
+World-writable files and directories
+.IP \(bu 4
+Setuid and setgid executables
+.IP \(bu 4
+SSH key file permissions
+.IP \(bu 4
+Sensitive configuration file access
+.IP \(bu 4
+Home directory security
+.PP
+All suggested fixes require explicit user confirmation before execution.
+.SH BUGS
+Report bugs to: https://github.com/sonyccd/debian-doctor/issues
+.SH AUTHOR
+Written by Brad Bazemore <bankersalgo@gmail.com>
+.SH SEE ALSO
+.BR systemctl (1),
+.BR df (1),
+.BR free (1),
+.BR netstat (8),
+.BR ss (8),
+.BR apt (8),
+.BR dpkg (1),
+.BR chmod (1),
+.BR chown (1)
+.SH COPYRIGHT
+This is free software; see the source for copying conditions.

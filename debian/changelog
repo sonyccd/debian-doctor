@@ -1,0 +1,14 @@
+debian-doctor (1.0.0-1) unstable; urgency=medium
+
+  * Initial release
+  * Comprehensive system diagnostic and troubleshooting tool
+  * System health checks for disk, memory, network, and services
+  * Interactive diagnosis with fix suggestions
+  * File permission analysis tool
+  * Comprehensive system reporting with health scores
+  * Simple text-based interface for universal compatibility
+  * CLI mode for specific issue diagnosis
+  * Automated fix execution with safety checks
+  * Support for both user and root operation modes
+
+ -- Brad Bazemore <bankersalgo@gmail.com>  Sun, 18 Aug 2025 07:00:00 +0000

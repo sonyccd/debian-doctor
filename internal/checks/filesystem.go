@@ -150,7 +150,7 @@ func (c FilesystemCheck) Run() CheckResult {
 
 // checkMountStatus checks for mount-related issues
 func (c FilesystemCheck) checkMountStatus() []string {
-	var issues []string
+	issues := []string{}
 
 	// Check /proc/mounts for any mount errors
 	cmd := exec.Command("mount")
@@ -186,7 +186,7 @@ func (c FilesystemCheck) checkMountStatus() []string {
 
 // checkReadOnlyFilesystems finds filesystems mounted read-only
 func (c FilesystemCheck) checkReadOnlyFilesystems() []string {
-	var readOnly []string
+	readOnly := []string{}
 
 	file, err := os.Open("/proc/mounts")
 	if err != nil {
@@ -226,7 +226,7 @@ func (c FilesystemCheck) checkReadOnlyFilesystems() []string {
 
 // checkFilesystemErrors looks for filesystem errors in kernel logs
 func (c FilesystemCheck) checkFilesystemErrors() []string {
-	var errors []string
+	errors := []string{}
 
 	cmd := exec.Command("dmesg")
 	output, err := cmd.Output()
@@ -266,7 +266,7 @@ func (c FilesystemCheck) checkFilesystemErrors() []string {
 
 // checkInodeUsage checks for high inode usage
 func (c FilesystemCheck) checkInodeUsage() []string {
-	var issues []string
+	issues := []string{}
 
 	cmd := exec.Command("df", "-i")
 	output, err := cmd.Output()
@@ -309,7 +309,7 @@ func (c FilesystemCheck) checkInodeUsage() []string {
 
 // checkCorruptionSigns looks for signs of filesystem corruption
 func (c FilesystemCheck) checkCorruptionSigns() []string {
-	var signs []string
+	signs := []string{}
 
 	// Check for lost+found directories with content
 	lostFoundDirs := []string{"/lost+found", "/home/lost+found", "/var/lost+found"}
@@ -343,7 +343,7 @@ func (c FilesystemCheck) checkCorruptionSigns() []string {
 
 // checkDiskUsagePatterns analyzes disk usage for concerning patterns
 func (c FilesystemCheck) checkDiskUsagePatterns() []string {
-	var issues []string
+	issues := []string{}
 
 	// Check for rapid disk usage changes (simplified check)
 	cmd := exec.Command("df", "-h")
@@ -410,7 +410,7 @@ func (c FilesystemCheck) checkOrphanedFiles() int {
 
 // checkSymbolicLinks checks for broken symbolic links
 func (c FilesystemCheck) checkSymbolicLinks() []string {
-	var issues []string
+	issues := []string{}
 
 	// Check common directories for broken symlinks
 	checkDirs := []string{"/usr/bin", "/usr/local/bin", "/bin", "/sbin"}
@@ -449,7 +449,7 @@ func (c FilesystemCheck) checkSymbolicLinks() []string {
 
 // checkFragmentation checks filesystem fragmentation (basic implementation)
 func (c FilesystemCheck) checkFragmentation() []string {
-	var fragmentation []string
+	fragmentation := []string{}
 
 	// Check if e2freefrag is available and run it on ext filesystems
 	cmd := exec.Command("which", "e2freefrag")
@@ -479,7 +479,7 @@ func (c FilesystemCheck) checkFragmentation() []string {
 // removeDuplicateStrings removes duplicate strings from a slice
 func removeDuplicateStrings(slice []string) []string {
 	keys := make(map[string]bool)
-	var result []string
+	result := []string{}
 
 	for _, item := range slice {
 		if !keys[item] {

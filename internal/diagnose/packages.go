@@ -248,7 +248,7 @@ func DiagnosePackageIssues() Diagnosis {
 
 // checkBrokenPackages finds packages in broken state
 func checkBrokenPackages() []string {
-	var broken []string
+	broken := []string{}
 
 	cmd := exec.Command("dpkg", "-l")
 	output, err := cmd.Output()
@@ -271,7 +271,7 @@ func checkBrokenPackages() []string {
 
 // checkDependencyIssues checks for unmet dependencies
 func checkDependencyIssues() []string {
-	var issues []string
+	issues := []string{}
 
 	cmd := exec.Command("apt-get", "check")
 	output, err := cmd.CombinedOutput()
@@ -315,7 +315,7 @@ func checkAPTLocked() bool {
 
 // checkRepositoryIssues checks for repository problems
 func checkRepositoryIssues() []string {
-	var issues []string
+	issues := []string{}
 
 	cmd := exec.Command("apt-get", "update")
 	output, err := cmd.CombinedOutput()
@@ -393,7 +393,7 @@ func checkOrphanedPackages() int {
 
 // checkPackageConfiguration checks for configuration issues
 func checkPackageConfiguration() []string {
-	var issues []string
+	issues := []string{}
 
 	cmd := exec.Command("dpkg", "--audit")
 	output, err := cmd.Output()
@@ -417,7 +417,7 @@ func checkPackageConfiguration() []string {
 
 // checkDuplicatePackages finds packages with multiple versions
 func checkDuplicatePackages() []string {
-	var duplicates []string
+	duplicates := []string{}
 
 	cmd := exec.Command("dpkg", "-l")
 	output, err := cmd.Output()
@@ -454,7 +454,7 @@ func checkDuplicatePackages() []string {
 // removeDuplicateStrings removes duplicate strings from a slice
 func removeDuplicateStrings(slice []string) []string {
 	keys := make(map[string]bool)
-	var result []string
+	result := []string{}
 
 	for _, item := range slice {
 		if !keys[item] {

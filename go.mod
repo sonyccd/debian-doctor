@@ -2,8 +2,6 @@ module github.com/debian-doctor/debian-doctor
 
 go 1.23.0
 
-toolchain go1.24.5
-
 require (
 	github.com/shirou/gopsutil/v3 v3.24.5
 	github.com/spf13/cobra v1.8.1

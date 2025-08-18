@@ -64,7 +64,9 @@ func (l *Logger) Debug(format string, args ...interface{}) {
 
 func (l *Logger) Close() error {
 	if l.file != nil {
-		return l.file.Close()
+		err := l.file.Close()
+		l.file = nil // Prevent double close
+		return err
 	}
 	return nil
 }

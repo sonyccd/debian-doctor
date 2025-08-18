@@ -294,14 +294,159 @@ uname -a
 2. **Terminal display issues**: Ensure terminal supports colors and UTF-8
 3. **Missing system tools**: Install required system utilities (systemctl, etc.)
 
-## Contributing
+## 🔄 CI/CD Pipeline
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Run the test suite
-6. Submit a pull request
+Our automated CI/CD pipeline ensures code quality and seamless deployments:
+
+### **Pipeline Triggers**
+
+| Event | Tests | Build | Deploy GitHub | Deploy Snap |
+|-------|-------|-------|---------------|-------------|
+| **Pull Request** | ✅ | ✅ | ❌ | ❌ |
+| **Push to main** | ✅ | ✅ | ✅ Auto-release | ✅ Edge channel |
+| **Tagged release** | ✅ | ✅ | ✅ Official release | ✅ Stable channel |
+
+### **Build Artifacts**
+Each successful build produces:
+- **Linux binaries**: amd64, arm64, armv7 architectures  
+- **Debian package**: `.deb` for easy installation
+- **Snap package**: Universal Linux distribution
+- **Checksums**: SHA256 verification for all artifacts
+
+### **Release Strategy**
+- **Development**: Push to `main` → Auto-release with incremented version → Snap edge channel
+- **Production**: Create git tag → Official release → Snap stable channel
+
+```bash
+# Development release (automatic)
+git push origin main
+
+# Production release  
+git tag v1.2.0
+git push --tags
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow our development workflow for the best experience.
+
+### **Development Workflow**
+
+1. **🍴 Fork & Clone**
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/debian-doctor.git
+   cd debian-doctor
+   ```
+
+2. **🌿 Create Feature Branch**
+   ```bash
+   git checkout -b feature/your-awesome-feature
+   ```
+
+3. **⚙️ Set Up Development Environment**
+   ```bash
+   # Install dependencies
+   go mod download
+   
+   # Run tests to ensure everything works
+   go test ./...
+   
+   # Build locally
+   go build -o debian-doctor .
+   ```
+
+4. **🔧 Make Your Changes**
+   - Follow existing code style and patterns
+   - Add tests for new functionality
+   - Update documentation as needed
+
+5. **✅ Validate Your Changes**
+   ```bash
+   # Run all tests
+   go test ./...
+   
+   # Check code formatting
+   go fmt ./...
+   
+   # Static analysis
+   go vet ./...
+   
+   # Test the binary
+   ./debian-doctor --version
+   ```
+
+6. **📤 Submit Pull Request**
+   ```bash
+   git add .
+   git commit -m "feat: add your awesome feature"
+   git push origin feature/your-awesome-feature
+   ```
+   
+   Then create a PR on GitHub. The CI/CD pipeline will automatically:
+   - ✅ Run all tests
+   - 🔨 Build all platforms
+   - 📦 Create packages
+   - ❌ **Not deploy** (PRs are safe!)
+
+### **Code Standards**
+
+- **Go Version**: 1.21+ required
+- **Code Style**: Follow `gofmt` standards
+- **Testing**: Add tests for new features
+- **Documentation**: Update README for user-facing changes
+- **Commits**: Use conventional commits (feat:, fix:, docs:, etc.)
+
+### **Adding New Features**
+
+#### **New System Checks**
+1. Create check in `internal/checks/`:
+   ```go
+   type YourCheck struct{}
+   
+   func (c *YourCheck) Name() string { return "Your Check" }
+   func (c *YourCheck) Run() CheckResult { /* implementation */ }
+   func (c *YourCheck) RequiresRoot() bool { return false }
+   ```
+
+2. Register in `internal/checks/checks.go`
+3. Add comprehensive tests
+
+#### **New Diagnosis Types**  
+1. Create diagnosis function in `internal/diagnose/`
+2. Add to `RunDiagnosis()` in `internal/tui/simple.go`
+3. Update interactive menu options
+
+#### **New Fix Suggestions**
+1. Add to `internal/fixes/` package
+2. Include safety checks and risk levels
+3. Test thoroughly before suggesting system changes
+
+### **Local Testing**
+
+```bash
+# Test different scenarios
+sudo ./debian-doctor                    # Full system check
+./debian-doctor --diagnose disk         # Specific diagnosis
+./debian-doctor --check /etc/passwd     # Permission analysis
+
+# Build packages locally
+./scripts/build-snap.sh                 # Test snap build
+dpkg-buildpackage -us -uc -b           # Test debian package
+```
+
+### **Getting Help**
+
+- **🐛 Bug Reports**: Use GitHub Issues with detailed reproduction steps
+- **💡 Feature Requests**: Open GitHub Issues with clear use cases  
+- **❓ Questions**: Check existing issues or start a discussion
+- **📧 Security Issues**: Email maintainer privately for security vulnerabilities
+
+### **Recognition**
+
+Contributors are recognized in:
+- GitHub contributor list
+- Release notes for significant contributions  
+- Special thanks for major features
 
 ## License
 

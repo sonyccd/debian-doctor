@@ -115,7 +115,7 @@ func (c LogsCheck) Run() CheckResult {
 
 // checkJournalErrors checks systemd journal for recent errors
 func (c LogsCheck) checkJournalErrors() []string {
-	var errors []string
+	errors := []string{}
 
 	// Get errors from the last 24 hours
 	cmd := exec.Command("journalctl", "--since", "24 hours ago", "-p", "err", "--no-pager", "-n", "20")
@@ -176,7 +176,7 @@ func (c LogsCheck) checkAuthFailures() int {
 
 // checkDiskErrors looks for disk-related errors in logs
 func (c LogsCheck) checkDiskErrors() []string {
-	var errors []string
+	errors := []string{}
 
 	cmd := exec.Command("journalctl", "--since", "7 days ago", "-p", "err", "--no-pager")
 	output, err := cmd.Output()
@@ -217,7 +217,7 @@ func (c LogsCheck) checkDiskErrors() []string {
 
 // checkMemoryIssues looks for memory-related problems
 func (c LogsCheck) checkMemoryIssues() []string {
-	var issues []string
+	issues := []string{}
 
 	cmd := exec.Command("journalctl", "--since", "24 hours ago", "--no-pager")
 	output, err := cmd.Output()
@@ -253,7 +253,7 @@ func (c LogsCheck) checkMemoryIssues() []string {
 
 // checkServiceFailures looks for failed systemd services
 func (c LogsCheck) checkServiceFailures() []string {
-	var failures []string
+	failures := []string{}
 
 	cmd := exec.Command("systemctl", "--failed", "--no-pager", "--no-legend")
 	output, err := cmd.Output()
@@ -282,7 +282,7 @@ func (c LogsCheck) checkServiceFailures() []string {
 
 // checkLogSizes checks for excessively large log files
 func (c LogsCheck) checkLogSizes() []string {
-	var largeLogs []string
+	largeLogs := []string{}
 
 	// Check journal size
 	cmd := exec.Command("journalctl", "--disk-usage")

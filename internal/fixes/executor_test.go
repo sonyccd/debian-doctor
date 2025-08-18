@@ -252,7 +252,7 @@ func TestExecuteFixPermissions(t *testing.T) {
 	}
 
 	// This should fail if not running as root
-	err := executor.ExecuteFix(fix)
+	err = executor.ExecuteFix(fix)
 	if !cfg.IsRoot && err == nil {
 		t.Error("Expected error when running root-required fix without root privileges")
 	}

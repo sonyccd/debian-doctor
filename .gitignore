@@ -1,9 +1,5 @@
 # Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
 *.so
-*.dylib
 
 # Test binary, built with `go test -c`
 *.test
@@ -21,8 +17,6 @@ go.work.sum
 # Build output
 debian-doctor
 debian-doctor-linux-*
-debian-doctor-darwin-*
-debian-doctor-windows-*
 dist/
 build/
 snap/build/
@@ -68,9 +62,7 @@ config.local.json
 *.old
 
 # Operating System Files
-Thumbs.db
 .DS_Store
-desktop.ini
 
 # Claude artifacts
 .claude/
@@ -84,12 +76,15 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Archives
-*.tar
+# Archives (keep source archives, ignore built ones)
 *.tar.gz
 *.zip
 *.rar
 *.7z
+
+# GitHub Actions artifacts
+artifacts/
+release/
 
 # Debian package build files
 *.deb
@@ -116,15 +111,17 @@ snap/.snapcraft/
 snapcraft.yaml.bak
 *.assert
 
-# AppImage files
-*.AppImage
-*.AppImage.zsync
-appimage-build/
+# Build checksums
+*.sha256
 
 # Test artifacts
 test-results/
 test-reports/
 *.test.json
+
+# CI/CD artifacts
+CHANGELOG.md
+RELEASE_NOTES.md
 
 # Benchmark results
 bench.txt
