@@ -135,16 +135,25 @@ jobs:
           # Move the package to current directory
           mv ../debian-doctor_*.deb .
           
-          # Create checksum for the deb package
-          sha256sum debian-doctor_*.deb > debian-doctor_*.deb.sha256
+          # Create checksum for the deb package and prepare artifacts
+          mkdir -p artifacts
+          for debfile in debian-doctor_*.deb; do
+            if [ -f "$debfile" ]; then
+              sha256sum "$debfile" > "$debfile.sha256"
+              cp "$debfile" "$debfile.sha256" artifacts/
+            fi
+          done
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: debian-doctor-${{ matrix.suffix }}
           path: |
-            debian-doctor-${{ matrix.suffix }}*
-            debian-doctor_*.deb*
+            debian-doctor-${{ matrix.suffix }}
+            debian-doctor-${{ matrix.suffix }}.sha256
+            debian-doctor-${{ matrix.suffix }}.tar.gz
+            debian-doctor-${{ matrix.suffix }}.tar.gz.sha256
+            artifacts/
           retention-days: 7
 
   create-release:
