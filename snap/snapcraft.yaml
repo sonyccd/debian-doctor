@@ -21,7 +21,7 @@ description: |
   run with root privileges.
 
 grade: stable
-confinement: classic
+confinement: strict
 
 contact: https://github.com/sonyccd/debian-doctor/issues
 issues: https://github.com/sonyccd/debian-doctor/issues
